@@ -1,0 +1,208 @@
+/* ===========================
+   ESTILOS RÚSTICOS ARTESANALES
+   =========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Lora&display=swap');
+
+body {
+  font-family: 'Lora', serif;
+  background-color: #f8f4ef;
+  color: #3e2f1c;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease;
+}
+
+header {
+  /* busca portada en ./assets (png/jpg/webp) y usa fallback remoto si falta */
+  background-image:
+    url('./assets/portada.png'),
+    url('./assets/portada.jpg'),
+    url('./assets/portada.webp'),
+    url('https://images.unsplash.com/photo-1608032075819-6e3f78bcdcd8?auto=format&fit=crop&w=1600&q=80');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 340px; /* asegura que se vea la imagen */
+  color: #fff;
+  text-align: center;
+  padding: 4rem 1rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+  position: relative;
+}
+
+header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+}
+
+header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.8rem;
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+header p {
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ajuste del logo en el header */
+.site-logo {
+  height: 300px;      /* tamaño aumentado */
+  max-height: 340px;  /* límite para pantallas muy grandes */
+  width: auto;
+  display: block;
+  margin: 0 auto 0.6rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ajuste para móviles */
+@media (max-width: 480px) {
+  .site-logo {
+    height: 80px;
+  }
+}
+
+.filter-buttons {
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.filter-buttons button {
+  background-color: #a1764c;
+  border: none;
+  color: #fffdfa;
+  padding: 0.6rem 1rem;
+  margin: 0 0.3rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Lora', serif;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.filter-buttons button:hover {
+  background-color: #c39467;
+  transform: translateY(-2px);
+}
+
+section {
+  max-width: 1100px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+}
+
+h2 {
+  font-family: 'Playfair Display', serif;
+  border-bottom: 2px solid #a1764c;
+  display: inline-block;
+  padding-bottom: 0.3rem;
+  margin-bottom: 1.5rem;
+  color: #4a3522;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background-color: #fffdfa;
+  border: 1px solid #e0d2c2;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, opacity 0.45s ease, transform 0.45s ease;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.card.visible {
+  opacity: 1;
+  transform: translateY(0);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: 1rem;
+}
+
+.card-content h3 {
+  margin: 0 0 0.5rem;
+  color: #4a3522;
+  font-size: 1.2rem;
+}
+
+.card-content p {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+
+.price {
+  font-weight: bold;
+  color: #a1764c;
+}
+
+footer {
+  background-color: #3e2f1c;
+  color: #fff;
+  text-align: center;
+  padding: 2rem 1rem;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #f8e3c2;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* clase utilitaria para ocultar secciones al filtrar */
+.hidden {
+  display: none !important;
+}
+
+/* Utilidad: ocultar visualmente pero mantener accesible para lectores de pantalla */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* asegurar que .hidden sea !important */
+.hidden {
+  display: none !important;
+}
+
+/* agregar will-change solo cuando sea necesario (ya lo tienes en JS) */
+.carousel-track {
+  will-change: transform;
+}

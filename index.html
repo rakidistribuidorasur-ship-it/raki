@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Distribuidora Raki - Productos artesanales del sur de Chile. Venta mayorista de cecinas, quesos, conservas y productos gourmet." />
+  <title>Catálogo Mayorista — Raki Productos del sur de Chile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Lora&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Estilos críticos inline para evitar FOUC */
+    .modal { display:none; position:fixed; inset:0; z-index:1000; align-items:center; justify-content:center; }
+    .modal.open { display:flex; }
+    .modal-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.6); }
+    .modal-content { position:relative; background:#fff; max-width:740px; width:90%; max-height:90vh; overflow:auto; border-radius:8px; padding:16px; box-shadow:0 10px 30px rgba(0,0,0,0.3); z-index:1; display:flex; gap:16px; align-items:flex-start; }
+    .modal-img { width:40%; max-width:280px; object-fit:cover; border-radius:6px; }
+    .modal-title { margin:0 0 8px 0; font-size:1.25rem; }
+    .modal-desc { margin:0; }
+    .modal-close { position:absolute; right:8px; top:8px; background:transparent; border:none; font-size:1.5rem; cursor:pointer; }
+    @media (max-width:640px){ .modal-content{flex-direction:column; align-items:center;} .modal-img{width:100%; max-width:100%;} }
+
+    .contact-section { transition:max-height 360ms ease, padding 360ms ease, opacity 360ms ease; overflow:hidden; max-height:1000px; opacity:1; position:relative; padding:28px 20px; background:linear-gradient(180deg,#fff,#fbfbfb); border-top:1px solid #eee; max-width:1100px; margin:28px auto; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.03); }
+    .contact-section.collapsed { max-height:0; opacity:0; padding-top:0; padding-bottom:0; margin:0 auto; }
+    .contact-close { position:absolute; right:12px; top:12px; background:transparent; border:none; font-size:1.2rem; padding:6px; cursor:pointer; color:#666; }
+    .contact-close:focus { outline:2px solid #2c6f4b; border-radius:6px; }
+    .contact-section h2 { font-size:1.5rem; margin:0 0 6px; }
+    .contact-section p.lead { margin:0 0 14px; color:#444; }
+    .contact-grid { display:grid; gap:10px; grid-template-columns:1fr 1fr; align-items:start; }
+    .contact-grid .full { grid-column:1/-1; }
+    .contact-grid input, .contact-grid textarea, .contact-grid select { padding:12px 14px; border:1px solid #e6e6e6; border-radius:8px; font-family:inherit; font-size:0.96rem; background:#fff; }
+    .contact-grid textarea { min-height:130px; resize:vertical; }
+    .contact-actions { display:flex; gap:12px; align-items:center; margin-top:8px; }
+    .contact-btn-main { background:#2c6f4b; color:#fff; border:none; padding:12px 18px; border-radius:10px; cursor:pointer; font-weight:700; box-shadow:0 6px 18px rgba(44,111,75,0.18); }
+    .contact-btn-ghost { background:transparent; color:#2c6f4b; border:2px solid #2c6f4b; padding:10px 16px; border-radius:10px; cursor:pointer; font-weight:600; }
+    .contact-feedback { margin-top:10px; font-size:0.95rem; }
+
+    .cta-contact { position:fixed; right:18px; bottom:18px; background:#ff7a59; color:#fff; padding:14px 18px; border-radius:999px; z-index:1200; box-shadow:0 10px 30px rgba(255,122,89,0.18); font-weight:800; display:flex; gap:10px; align-items:center; text-decoration:none; }
+    .cta-contact .pulse { width:10px; height:10px; background:#fff; border-radius:50%; animation:pulse 1.8s infinite; }
+    @keyframes pulse { 0%{transform:scale(.9); opacity:1} 70%{transform:scale(1.9); opacity:0} 100%{transform:scale(.9); opacity:0} }
+
+    .whatsapp-fab { position:fixed; right:18px; bottom:78px; z-index:1220; display:inline-flex; align-items:center; gap:10px; background:#25d366; color:#fff; padding:12px 14px; border-radius:999px; box-shadow:0 10px 26px rgba(37,211,102,0.18); text-decoration:none; font-weight:700; font-size:0.95rem; }
+    .whatsapp-fab svg { width:20px; height:20px; display:block; flex:0 0 20px; }
+    .whatsapp-fab:hover { transform:translateY(-3px); transition:transform .18s ease; }
+    .whatsapp-fab .wsp-label { display:inline-block; }
+
+    .hero-carousel { max-width:1100px; margin:18px auto; position:relative; overflow:hidden; border-radius:8px; }
+    .carousel { position:relative; }
+    .carousel-track { display:flex; transition:transform .55s ease; will-change:transform; }
+    .carousel-slide { min-width:100%; box-sizing:border-box; flex-shrink:0; }
+    .carousel-slide img { width:100%; height:360px; object-fit:cover; display:block; }
+    .carousel-controls { position:absolute; top:50%; left:0; right:0; display:flex; justify-content:space-between; transform:translateY(-50%); pointer-events:none; padding:0 8px; }
+    .carousel-btn { pointer-events:auto; background:rgba(0,0,0,0.46); color:#fff; border:none; padding:10px 12px; border-radius:999px; margin:0 6px; cursor:pointer; font-weight:700; }
+    .carousel-btn:focus { outline:2px solid #ff7a59; }
+    .carousel-indicators { position:absolute; left:50%; bottom:12px; transform:translateX(-50%); display:flex; gap:8px; z-index:10; }
+    .carousel-indicators button { width:10px; height:10px; border-radius:50%; border:none; background:rgba(255,255,255,0.6); cursor:pointer; padding:0; }
+    .carousel-indicators button.active { background:#ff7a59; box-shadow:0 2px 6px rgba(0,0,0,0.18); }
+
+    @media (max-width:640px){ 
+      .contact-grid { grid-template-columns:1fr; } 
+      .cta-contact{ right:12px; bottom:12px; padding:12px 14px; } 
+      .whatsapp-fab { right:12px; bottom:84px; padding:10px 12px; font-size:0.88rem; }
+      .whatsapp-fab .wsp-label{ display:none; }
+      .carousel-slide img { height:220px; }
+    }
+
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border-width:0; }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="./assets/logpng.png" alt="Logo Raki Productos del Sur" class="site-logo" />
+    <h1>Distribuidora Raki</h1>
+    <p>Distribución Mayorista de Productos Artesanales del Sur de Chile</p>
+  </header>
+
+  <!-- Carrusel -->
+  <section class="hero-carousel" aria-label="Galería principal">
+    <div class="carousel" data-carousel>
+      <div class="carousel-track" data-track>
+        <figure class="carousel-slide">
+          <img src="./assets/slide1.webp" alt="Productos del sur — vista 1" loading="lazy" />
+        </figure>
+        <figure class="carousel-slide">
+          <img src="./assets/slide2.webp" alt="Productos artesanales — vista 2" loading="lazy" />
+        </figure>
+      </div>
+      <div class="carousel-controls" aria-hidden="true">
+        <button class="carousel-btn prev" type="button" aria-label="Imagen anterior">&larr;</button>
+        <button class="carousel-btn next" type="button" aria-label="Siguiente imagen">&rarr;</button>
+      </div>
+      <nav class="carousel-indicators" role="tablist" aria-label="Indicadores de la galería">
+        <button data-slide="0" role="tab" type="button" aria-selected="true" aria-controls="slide-0" aria-label="Ir a imagen 1" class="active"></button>
+        <button data-slide="1" role="tab" type="button" aria-selected="false" aria-controls="slide-1" aria-label="Ir a imagen 2"></button>
+      </nav>
+    </div>
+  </section>
+
+  <main>
+    <!-- Productos Lácteos -->
+    <section class="productos" aria-labelledby="productos-title">
+      <h2 id="productos-title">🧀 Productos Lácteos</h2>
+      <div class="grid">
+        <article class="card">
+          <img src="./assets/surtido-de-quesos-paneer-tradicionales.webp" alt="Queso Chanco" loading="lazy" />
+          <div class="card-content">
+            <h3>Queso Chanco</h3>
+            <p>Textura cremosa, ideal para fundir.</p>
+            <p class="price">Por mayor: $3.800</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/quesillo.fresco.webp" alt="Quesillo de Campo" loading="lazy" />
+          <div class="card-content">
+            <h3>Queso de Campo</h3>
+            <p>Elaborado con leche entera fresca.</p>
+            <p class="price">Por mayor: $2.700</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Embutidos y Cárnicos -->
+    <section class="carnicos" aria-labelledby="carnicos-title">
+      <h2 id="carnicos-title">🥓 Embutidos y Cárnicos</h2>
+      <div class="grid">
+        <article class="card">
+          <img src="./assets/longa.webp" alt="Longaniza artesanal" loading="lazy" />
+          <div class="card-content">
+            <h3>Longaniza Artesanal</h3>
+            <p>Curada y condimentada, ideal para revender.</p>
+            <p class="price">Por mayor: $3.900</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/Salchichas.webp" alt="Salchichas artesanales" loading="lazy" />
+          <div class="card-content">
+            <h3>Salchichas Artesanales</h3>
+            <p>Variedades: clásica, ahumada y merkén.</p>
+            <p class="price">Por mayor: $3.200</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/pate.webp" alt="Paté casero" loading="lazy" />
+          <div class="card-content">
+            <h3>Paté Casero</h3>
+            <p>Paté de cerdo y aves, presentación para venta.</p>
+            <p class="price">Por mayor: $2.600</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/jamon.ahumado.webp" alt="Jamón ahumado" loading="lazy" />
+          <div class="card-content">
+            <h3>Jamón Ahumado</h3>
+            <p>Curación tradicional con ahumado suave.</p>
+            <p class="price">Por mayor: $8.500</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/lomoahumado.webp" alt="Carne ahumada" loading="lazy" />
+          <div class="card-content">
+            <h3>Carne Ahumada</h3>
+            <p>Trozos ahumados listos para cortar.</p>
+            <p class="price">Por mayor: $7.200</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Productos Naturales y Gourmet -->
+    <section class="gourmet" aria-labelledby="gourmet-title">
+      <h2 id="gourmet-title">🍯 Productos Naturales y Gourmet</h2>
+      <div class="grid">
+        <article class="card">
+          <img src="./assets/miel.webp" alt="Miel pura" loading="lazy" />
+          <div class="card-content">
+            <h3>Miel</h3>
+            <p>Miel pura del bosque valdiviano, aroma floral intenso.</p>
+            <p class="price">Por mayor: $4.800</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/mermeladas.webp" alt="Mermeladas artesanales" loading="lazy" />
+          <div class="card-content">
+            <h3>Mermeladas Artesanales</h3>
+            <p>Murta, mora y frambuesa, sin preservantes.</p>
+            <p class="price">Por mayor: $3.200</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/conservas.webp" alt="Conservas caseras" loading="lazy" />
+          <div class="card-content">
+            <h3>Conservas Caseras</h3>
+            <p>Vegetales y pescados en aceite y escabeche.</p>
+            <p class="price">Por mayor: $3.500</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/frutossecos.webp" alt="Frutos secos - mix" loading="lazy" />
+          <div class="card-content">
+            <h3>Frutos Secos Mix</h3>
+            <p>Maní, nuez y almendra — ideal para comercio.</p>
+            <p class="price">Por mayor: $2.900</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/merken.webp" alt="Aliño merkén" loading="lazy" />
+          <div class="card-content">
+            <h3>Aliño Merkén</h3>
+            <p>Pimentón ahumado con merken — toque picante.</p>
+            <p class="price">Por mayor: $1.800</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/leñahumo.webp" alt="Trozos de madera aromatizados" loading="lazy" />
+          <div class="card-content">
+            <h3>Trozos de Madera Aromatizados</h3>
+            <p>Para ahumar y dar aroma en cocina y parrilla.</p>
+            <p class="price">Por mayor: $4.200</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/choco.webp" alt="Chocolates artesanales" loading="lazy" />
+          <div class="card-content">
+            <h3>Chocolates, Bombones y Trufas</h3>
+            <p>Selección artesanal: tabletas, bombones y trufas.</p>
+            <p class="price">Por mayor: $3.600</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/alfa.webp" alt="Alfajores" loading="lazy" />
+          <div class="card-content">
+            <h3>Alfajores</h3>
+            <p>Rellenos con manjar casero — ideal para revender.</p>
+            <p class="price">Por mayor: $2.400</p>
+          </div>
+        </article>
+        <article class="card">
+          <img src="./assets/manjar.webp" alt="Manjar" loading="lazy" />
+          <div class="card-content">
+            <h3>Manjar</h3>
+            <p>Manjar tradicional, textura cremosa.</p>
+            <p class="price">Por mayor: $2.200</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Salsas -->
+    <section class="bebidas" aria-labelledby="salsas-title">
+      <h2 id="salsas-title">🌶️ Salsas</h2>
+      <div class="grid">
+        <article class="card">
+          <img src="./assets/aji.webp" alt="Pasta de ají" loading="lazy" />
+          <div class="card-content">
+            <h3>Pasta de Ají</h3>
+            <p>Conservada artesanalmente, distintos niveles de picante.</p>
+            <p class="price">Por mayor: $1.900</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal producto -->
+  <aside id="product-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+    <div class="modal-overlay"></div>
+    <article class="modal-content">
+      <button class="modal-close" type="button" aria-label="Cerrar modal">&times;</button>
+      <img src="" alt="" class="modal-img" loading="lazy" />
+      <div>
+        <h2 id="modal-title" class="modal-title"></h2>
+        <p class="modal-desc"></p>
+      </div>
+    </article>
+  </aside>
+
+  <!-- Formulario de contacto -->
+  <section class="contact-section collapsed" id="contact" aria-labelledby="contact-title" aria-hidden="true" inert>
+    <button class="contact-close" id="close-contact" type="button" aria-label="Cerrar formulario">✕</
+          <h3>Salchichas Artesanales</h3>
+          <p>Variedades: clásica, ahumada y merkén.</p>
+          <p class="price">Por mayor: $3.200</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="./assets/pate.webp" alt="Paté casero" />
+        <div class="card-content">
+          <h3>Paté Casero</h3>
+          <p>Paté de cerdo y aves, presentación para venta.</p>
+          <p class="price">Por mayor: $2.600</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="./assets/jamon.ahumado.webp" alt="Jamón ahumado" />
+        <div class="card-content">
+          <h3>Jamón Ahumado</h3>
+          <p>Curación tradicional con ahumado suave.</p>
+          <p class="price">Por mayor: $8.500</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="./assets/lomoahumado.webp" alt="Carne ahumada" />
+        <div class="card-content">
+          <h3>Carne Ahumada</h3>
+          <p>Trozos ahumados listos para cortar.</p>
+          <p class="price">Por mayor: $7.200</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sección Bebidas y salsas: solo queda pasta de ají -->
+  <section class="bebidas">
+    <h2>Salsas</h2>
+    <div class="grid">
+      <div class="card">
+        <img src="./assets/aji.webp" alt="Pasta de ají" />
+        <div class="card-content">
+          <h3>Pasta de Ají</h3>
+          <p>Conservada artesanalmente, distintos niveles de picante.</p>
+          <p class="price">Por mayor: $1.900</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal reutilizable: se llenará con JS al hacer click en cada .card -->
+  <div id="product-modal" class="modal" aria-hidden="true">
+    <div class="modal-overlay" data-close></div>
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal-close" aria-label="Cerrar">&times;</button>
+      <img src="" alt="" class="modal-img" />
+      <div>
+        <h3 id="modal-title" class="modal-title"></h3>
+        <p class="modal-desc"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección de contacto con CTA y formulario -->
+  <section class="contact-section collapsed" id="contact" aria-labelledby="contact-title" aria-hidden="true" aria-expanded="false">
+    <button class="contact-close" id="close-contact" aria-label="Cerrar formulario">✕</button>
+    <h2 id="contact-title">📩 ¿Quieres cotizar o pedir muestra?</h2>
+    <p class="lead">Completa el formulario o pulsa el botón naranja para contactar rápido. Respuesta en menos de 24 horas.</p>
+
+    <form id="contact-form" class="contact-grid" novalidate>
+      <input name="name" type="text" placeholder="Nombre o empresa *" required />
+      <input name="email" type="email" placeholder="Email *" required />
+      <input name="phone" type="tel" placeholder="Teléfono (opcional)" />
+      <select name="category" aria-label="Categoría (opcional)">
+        <option value="">Categoría (opcional)</option>
+        <option value="Consulta general">Consulta general</option>
+        <option value="Pedido mayorista">Pedido mayorista</option>
+      </select>
+      <textarea name="message" class="full" placeholder="Tu mensaje, especifica productos y cantidades (mínimo) *" required></textarea>
+
+      <div class="full contact-actions">
+        <button type="submit" class="contact-btn-main" title="Enviar mensaje">Enviar mensaje</button>
+        <button type="button" class="contact-btn-ghost" id="clear-contact" title="Limpiar formulario">Limpiar</button>
+        <span id="contact-feedback" class="contact-feedback" aria-live="polite"></span>
+      </div>
+    </form>
+  </section>
+
+  <!-- CTA flotante: abre el formulario (ahora actúa como botón) -->
+  <a href="#" class="cta-contact" id="cta-contact" role="button" aria-controls="contact" aria-expanded="false" aria-label="Contactar ahora">
+    <span class="pulse" aria-hidden="true"></span>
+    Contactar / Cotizar
+  </a>
+
+  <!-- Botón flotante WhatsApp -->
+  <a class="whatsapp-fab"
+     id="whatsapp-fab"
+     href="https://wa.me/569984131147?text=Hola%20Raki%20%F0%9F%8C%9F%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20productos"
+     target="_blank" rel="noopener noreferrer"
+     aria-label="Contactar por WhatsApp">
+    <!-- SVG icono WhatsApp -->
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" role="img">
+      <path d="M20.52 3.48A11.87 11.87 0 0012 .03C5.37.03-.06 5.46-.06 12.09c0 2.13.56 4.2 1.62 6.02L.03 24l6.17-1.61A11.98 11.98 0 0012.09 24c6.63 0 12.06-5.43 12.06-12.11 0-3.24-1.25-6.29-3.63-8.41z" fill="#25D366"/>
+      <path d="M17.2 14.05c-.27-.13-1.6-.79-1.85-.88-.25-.09-.43-.13-.61.13-.18.26-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.13-1.14-.42-2.17-1.34-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.28-.45.09-.18.04-.34-.02-.47-.06-.13-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.46-.16 0-.35-.01-.54-.01-.18 0-.47.07-.71.34-.25.27-.95.93-.95 2.27s.98 2.63 1.12 2.81c.14.18 1.93 2.96 4.68 4.15 1.41.6 1.99.8 2.68.85.69.05 1.33.05 1.83.03.56-.03 1.6-.65 1.83-1.28.23-.63.23-1.17.16-1.28-.07-.11-.25-.18-.52-.31z" fill="#fff"/>
+    </svg>
+    <span class="wsp-label">WhatsApp</span>
+  </a>
+
+  <footer>
+    <p><strong>Distribuidora Raki Ltda.</strong> — Productos del Sur a tu Negocio</p>
+    <p>📍 Estación Central, Santiago — 📧 <a href="mailto:ventas@surcapital.cl">raki.distribuidora.sur@gmail.com</a> — 📱 +56 9 984131147</p>
+    <p>Pedidos sobre $250.000 con despacho gratis en Santiago</p>
+  </footer>
+
+  <!-- Cargar EmailJS v4 (módulo) y exponerlo globalmente -->
+<script type="module">
+  import * as emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.es.min.js';
+  // exponer en window para compatibilidad con script.js
+  window.emailjs = emailjs;
+  emailjs.init('j8hr_UiaE5pRfCtV4');
+</script>
+
+<script src="script.js" defer></script>
+</body>
+</html>
