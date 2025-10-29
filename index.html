@@ -292,7 +292,75 @@
 
   <!-- Formulario de contacto -->
   <section class="contact-section collapsed" id="contact" aria-labelledby="contact-title" aria-hidden="true" inert>
-    <button class="contact-close" id="close-contact" type="button" aria-label="Cerrar formulario">✕</
+    <button class="contact-close" id="close-contact" type="button" aria-label="Cerrar formulario">✕</button>
+    
+    <h2 id="contact-title">📬 Contáctanos</h2>
+    <p class="lead">Completa el formulario y te responderemos a la brevedad</p>
+    
+    <form id="contact-form" class="contact-grid" aria-label="Formulario de contacto">
+      <!-- Nombre -->
+      <div class="full">
+        <label for="contact-name" class="sr-only">Nombre o Empresa *</label>
+        <input 
+          type="text" 
+          id="contact-name" 
+          name="name" 
+          placeholder="Nombre o Empresa *" 
+          required 
+          aria-required="true"
+        />
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="contact-email" class="sr-only">Email *</label>
+        <input 
+          type="email" 
+          id="contact-email" 
+          name="email" 
+          placeholder="Email *" 
+          required 
+          aria-required="true"
+        />
+      </div>
+
+      <!-- Teléfono -->
+      <div>
+        <label for="contact-phone" class="sr-only">Teléfono</label>
+        <input 
+          type="tel" 
+          id="contact-phone" 
+          name="phone" 
+          placeholder="Teléfono (opcional)"
+        />
+      </div>
+
+      <!-- Categoría -->
+      <div class="full">
+        <label for="contact-category" class="sr-only">Categoría de interés</label>
+        <select id="contact-category" name="category">
+          <option value="">-- Categoría de interés --</option>
+          <option value="lacteos">🧀 Lácteos</option>
+          <option value="carnicos">🥓 Embutidos y Cárnicos</option>
+          <option value="gourmet">🍯 Naturales y Gourmet</option>
+          <option value="salsas">🌶️ Salsas</option>
+          <option value="general">📦 Consulta General</option>
+        </select>
+      </div>
+
+      <!-- Mensaje -->
+      <div class="full">
+        <label for="contact-message" class="sr-only">Mensaje *</label>
+        <textarea 
+          id="contact-message" 
+          name="message" 
+          placeholder="Cuéntanos qué necesitas... *" 
+          required 
+          aria-required="true"
+        ></textarea>
+      </div>
+
+      <!-- Acciones -->
       <div class="full contact-actions">
         <button type="submit" class="contact-btn-main" title="Enviar mensaje">Enviar mensaje</button>
         <button type="button" class="contact-btn-ghost" id="clear-contact" title="Limpiar formulario">Limpiar</button>
@@ -302,7 +370,7 @@
   </section>
 
   <!-- CTA flotante -->
-  <a href="#" class="cta-contact" id="cta-contact" role="button" aria-controls="contact" aria-expanded="false" aria-label="Contactar ahora">
+  <a href="#contact" class="cta-contact" id="cta-contact" role="button" aria-controls="contact" aria-expanded="false" aria-label="Contactar ahora">
     <span class="pulse" aria-hidden="true"></span>
     Contactar / Cotizar
   </a>
