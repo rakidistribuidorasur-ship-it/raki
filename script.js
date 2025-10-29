@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
       closeBtn?.focus();
 
       if (whatsappFab && title) {
-        const base = 'https://wa.me/569984131147';
+        const base = 'https://wa.me/56984131147';
         const text = `Hola Raki 🌟, quiero información sobre: ${title}`;
         whatsappFab.href = `${base}?text=${encodeURIComponent(text)}`;
       }
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (modalImg) modalImg.src = '';
       document.body.style.overflow = '';
       if (whatsappFab) {
-        whatsappFab.href = 'https://wa.me/569984131147?text=Hola%20Raki%20%F0%9F%8C%9F%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20productos';
+        whatsappFab.href = 'https://wa.me/56984131147?text=Hola%20Raki%20%F0%9F%8C%9F%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20productos';
       }
     }
 
@@ -338,6 +338,24 @@ document.addEventListener('DOMContentLoaded', () => {
     goTo(0);
     startAuto();
   } // end carousel
+
+  // Botón WhatsApp
+  const wspBtn = document.getElementById('whatsapp-fab');
+  if (wspBtn) {
+    wspBtn.addEventListener('click', (e) => {
+      // Analytics: track WhatsApp click
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'click', {
+          event_category: 'engagement',
+          event_label: 'WhatsApp FAB'
+        });
+      }
+      // URL correcta
+      const phoneNumber = '56984131147';
+      const message = encodeURIComponent('Hola Raki 🌟, quiero información sobre sus productos');
+      wspBtn.href = `https://wa.me/${phoneNumber}?text=${message}`;
+    });
+  }
 
 }); // end DOMContentLoaded
 
