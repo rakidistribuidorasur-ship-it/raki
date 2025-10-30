@@ -415,4 +415,6 @@ document.addEventListener('DOMContentLoaded', () => {
     goTo(0);
     startAuto();
   }
+
+  // Agregar al script.js eventos adicionales para productos, carrusel, etc.
 });

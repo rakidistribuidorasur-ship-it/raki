@@ -14,6 +14,52 @@
   })(window,document,'script','dataLayer','GTM-T7MQ65QT');</script>
   <!-- End Google Tag Manager -->
   
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-V14QD642ED"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-V14QD642ED', {
+      page_title: 'Catálogo Mayorista Raki',
+      page_location: window.location.href,
+      content_group1: 'Distribuidora',
+      content_group2: 'Productos Artesanales'
+    });
+
+    // Función para enviar eventos de seguimiento
+    function trackEvent(eventName, category, label = '', value = 0) {
+      gtag('event', eventName, {
+        event_category: category,
+        event_label: label,
+        value: value,
+        custom_parameter_1: 'raki_mayorista'
+      });
+    }
+
+    // Eventos automáticos cuando el DOM esté listo
+    document.addEventListener('DOMContentLoaded', function() {
+      // Seguimiento de scroll
+      let scrollTracked = false;
+      window.addEventListener('scroll', function() {
+        if (!scrollTracked && window.scrollY > 500) {
+          trackEvent('scroll_deep', 'engagement', 'deep_scroll');
+          scrollTracked = true;
+        }
+      });
+
+      // Seguimiento de tiempo en página
+      setTimeout(() => {
+        trackEvent('time_on_site', 'engagement', '30_seconds');
+      }, 30000);
+
+      setTimeout(() => {
+        trackEvent('time_on_site', 'engagement', '60_seconds');
+      }, 60000);
+    });
+  </script>
+  <!-- End Google Analytics -->
+  
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Lora&display=swap" rel="stylesheet" />
@@ -414,7 +460,7 @@
     <section class="productos" aria-labelledby="productos-title">
       <h2 id="productos-title">🧀 Productos Lácteos</h2>
       <div class="grid">
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'lacteos', 'queso_chanco', 3800)">
           <img src="./assets/surtido-de-quesos-paneer-tradicionales.webp" alt="Queso Chanco" loading="lazy" />
           <div class="card-content">
             <h3>Queso Chanco</h3>
@@ -422,7 +468,7 @@
             <p class="price">Por mayor: $3.800</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'lacteos', 'queso_campo', 2700)">
           <img src="./assets/quesillo.fresco.webp" alt="Quesillo de Campo" loading="lazy" />
           <div class="card-content">
             <h3>Queso de Campo</h3>
@@ -437,7 +483,7 @@
     <section class="carnicos" aria-labelledby="carnicos-title">
       <h2 id="carnicos-title">🥓 Embutidos y Cárnicos</h2>
       <div class="grid">
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'carnicos', 'longaniza_artesanal', 3900)">
           <img src="./assets/longa.webp" alt="Longaniza artesanal" loading="lazy" />
           <div class="card-content">
             <h3>Longaniza Artesanal</h3>
@@ -445,7 +491,7 @@
             <p class="price">Por mayor: $3.900</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'carnicos', 'salchichas_artesanales', 3200)">
           <img src="./assets/Salchichas.webp" alt="Salchichas artesanales" loading="lazy" />
           <div class="card-content">
             <h3>Salchichas Artesanales</h3>
@@ -453,7 +499,7 @@
             <p class="price">Por mayor: $3.200</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'carnicos', 'pate_casero', 2600)">
           <img src="./assets/pate.webp" alt="Paté casero" loading="lazy" />
           <div class="card-content">
             <h3>Paté Casero</h3>
@@ -461,7 +507,7 @@
             <p class="price">Por mayor: $2.600</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'carnicos', 'jamon_ahumado', 8500)">
           <img src="./assets/jamon.ahumado.webp" alt="Jamón ahumado" loading="lazy" />
           <div class="card-content">
             <h3>Jamón Ahumado</h3>
@@ -469,7 +515,7 @@
             <p class="price">Por mayor: $8.500</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'carnicos', 'carne_ahumada', 7200)">
           <img src="./assets/lomoahumado.webp" alt="Carne ahumada" loading="lazy" />
           <div class="card-content">
             <h3>Carne Ahumada</h3>
@@ -484,7 +530,7 @@
     <section class="gourmet" aria-labelledby="gourmet-title">
       <h2 id="gourmet-title">🍯 Productos Naturales y Gourmet</h2>
       <div class="grid">
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'gourmet', 'miel_bosque_valdiviano', 4800)">
           <img src="./assets/miel.webp" alt="Miel pura" loading="lazy" />
           <div class="card-content">
             <h3>Miel</h3>
@@ -492,7 +538,7 @@
             <p class="price">Por mayor: $4.800</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'gourmet', 'mermeladas_artesanales', 3200)">
           <img src="./assets/mermeladas.webp" alt="Mermeladas artesanales" loading="lazy" />
           <div class="card-content">
             <h3>Mermeladas Artesanales</h3>
@@ -500,7 +546,7 @@
             <p class="price">Por mayor: $3.200</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'gourmet', 'conservas_caseras', 3500)">
           <img src="./assets/conservas.webp" alt="Conservas caseras" loading="lazy" />
           <div class="card-content">
             <h3>Conservas Caseras</h3>
@@ -508,7 +554,7 @@
             <p class="price">Por mayor: $3.500</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'gourmet', 'frutos_secos_mix', 2900)">
           <img src="./assets/frutossecos.webp" alt="Frutos secos - mix" loading="lazy" />
           <div class="card-content">
             <h3>Frutos Secos Mix</h3>
@@ -516,7 +562,7 @@
             <p class="price">Por mayor: $2.900</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'gourmet', 'alino_merken', 1800)">
           <img src="./assets/merken.webp" alt="Aliño merkén" loading="lazy" />
           <div class="card-content">
             <h3>Aliño Merkén</h3>
@@ -524,7 +570,7 @@
             <p class="price">Por mayor: $1.800</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'gourmet', 'madera_aromatizada', 4200)">
           <img src="./assets/leñahumo.webp" alt="Trozos de madera aromatizados" loading="lazy" />
           <div class="card-content">
             <h3>Trozos de Madera Aromatizados</h3>
@@ -532,7 +578,7 @@
             <p class="price">Por mayor: $4.200</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'gourmet', 'chocolates_artesanales', 3600)">
           <img src="./assets/choco.webp" alt="Chocolates artesanales" loading="lazy" />
           <div class="card-content">
             <h3>Chocolates, Bombones y Trufas</h3>
@@ -540,7 +586,7 @@
             <p class="price">Por mayor: $3.600</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'gourmet', 'alfajores_manjar', 2400)">
           <img src="./assets/alfa.webp" alt="Alfajores" loading="lazy" />
           <div class="card-content">
             <h3>Alfajores</h3>
@@ -548,7 +594,7 @@
             <p class="price">Por mayor: $2.400</p>
           </div>
         </article>
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'gourmet', 'manjar_tradicional', 2200)">
           <img src="./assets/manjar.webp" alt="Manjar" loading="lazy" />
           <div class="card-content">
             <h3>Manjar</h3>
@@ -563,7 +609,7 @@
     <section class="bebidas" aria-labelledby="salsas-title">
       <h2 id="salsas-title">🌶️ Salsas</h2>
       <div class="grid">
-        <article class="card">
+        <article class="card" onclick="trackEvent('product_click', 'salsas', 'pasta_aji', 1900)">
           <img src="./assets/aji.webp" alt="Pasta de ají" loading="lazy" />
           <div class="card-content">
             <h3>Pasta de Ají</h3>
@@ -667,19 +713,20 @@
     </form>
   </section>
 
-  <!-- CTA flotante responsive optimizado -->
-  <a href="#contact" class="fab-btn cta-contact" id="cta-contact" role="button" aria-controls="contact" aria-expanded="false" aria-label="Contactar ahora">
+  <!-- CTA flotante con seguimiento -->
+  <a href="#contact" class="fab-btn cta-contact" id="cta-contact" role="button" aria-controls="contact" aria-expanded="false" aria-label="Contactar ahora" onclick="trackEvent('click', 'cta_button', 'contactar_cotizar')">
     <span class="pulse" aria-hidden="true"></span>
     <span class="cta-text">Contactar / Cotizar</span>
     <span class="cta-text-short">Cotizar</span>
   </a>
 
-  <!-- Botón flotante WhatsApp optimizado -->
+  <!-- Botón flotante WhatsApp con seguimiento -->
   <a class="fab-btn whatsapp-fab"
      id="whatsapp-fab"
      href="https://wa.me/56984131147?text=Hola%20Raki%20%F0%9F%8C%9F%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20productos"
      target="_blank" rel="noopener noreferrer"
-     aria-label="Contactar por WhatsApp">
+     aria-label="Contactar por WhatsApp"
+     onclick="trackEvent('click', 'whatsapp_button', 'contacto_directo')">
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" role="img">
       <path d="M20.52 3.48A11.87 11.87 0 0012 .03C5.37.03-.06 5.46-.06 12.09c0 2.13.56 4.2 1.62 6.02L.03 24l6.17-1.61A11.98 11.98 0 0012.09 24c6.63 0 12.06-5.43 12.06-12.11 0-3.24-1.25-6.29-3.63-8.41z" fill="#25D366"/>
       <path d="M17.2 14.05c-.27-.13-1.6-.79-1.85-.88-.25-.09-.43-.13-.61.13-.18.26-.7.88-.86 1.06-.16.18-.32.2-.59.07-.27-.13-1.14-.42-2.17-1.34-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.42.12-.55.12-.12.27-.32.41-.48.14-.16.18-.27.28-.45.09-.18.04-.34-.02-.47-.06-.13-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.46-.16 0-.35-.01-.54-.01-.18 0-.47.07-.71.34-.25.27-.95.93-.95 2.27s.98 2.63 1.12 2.81c.14.18 1.93 2.96 4.68 4.15 1.41.6 1.99.8 2.68.85.69.05 1.33.05 1.83.03.56-.03 1.6-.65 1.83-1.28.23-.63.23-1.17.16-1.28-.07-.11-.25-.18-.52-.31z" fill="#fff"/>
@@ -694,12 +741,12 @@
     
     <!-- Redes sociales optimizadas -->
     <div class="social-links">
-      <a href="https://www.facebook.com/profile.php?id=61583199323370" target="_blank" rel="noopener noreferrer" aria-label="Síguenos en Facebook" class="social-icon">
+      <a href="https://www.facebook.com/profile.php?id=61583199323370" target="_blank" rel="noopener noreferrer" aria-label="Síguenos en Facebook" class="social-icon" onclick="trackEvent('click', 'social_media', 'facebook')">
         <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
         </svg>
       </a>
-      <a href="https://www.instagram.com/raki.distribuido/" target="_blank" rel="noopener noreferrer" aria-label="Síguenos en Instagram" class="social-icon">
+      <a href="https://www.instagram.com/raki.distribuido/" target="_blank" rel="noopener noreferrer" aria-label="Síguenos en Instagram" class="social-icon" onclick="trackEvent('click', 'social_media', 'instagram')">
         <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
         </svg>
