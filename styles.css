@@ -206,3 +206,122 @@ footer a:hover {
 .carousel-track {
   will-change: transform;
 }
+
+/* ========================================
+   REDES SOCIALES EN FOOTER
+   ======================================== */
+.social-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border-radius: 0;
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.social-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.social-icon:hover {
+  background: transparent;
+  transform: scale(1.2);
+  filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.5));
+}
+
+.social-icon:active {
+  transform: translateY(-1px) scale(1.05);
+}
+
+.social-icon:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.5);
+  outline-offset: 3px;
+}
+
+/* Responsive para tablet */
+@media (max-width: 1024px) {
+  .social-links {
+    justify-content: flex-start;
+    padding-left: 20px;
+  }
+  
+  .carousel {
+    height: 400px;
+  }
+  .carousel-btn {
+    width: 46px;
+    height: 46px;
+    font-size: 1.4rem;
+  }
+  .carousel-controls {
+    padding: 0 16px;
+  }
+  .carousel-indicators {
+    bottom: 20px;
+    padding: 8px 14px;
+  }
+}
+
+/* Responsive para móvil */
+@media (max-width: 640px) {
+  .social-links {
+    justify-content: flex-start;
+    gap: 15px;
+    margin-top: 15px;
+    padding-top: 12px;
+    padding-left: 15px;
+  }
+  
+  .social-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .social-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .contact-grid { grid-template-columns: 1fr; } 
+  .cta-contact { right: 12px; bottom: 12px; padding: 12px 14px; } 
+  .whatsapp-fab { right: 12px; bottom: 84px; padding: 10px 12px; font-size: 0.88rem; }
+  .whatsapp-fab .wsp-label { display: none; }
+  
+  .carousel { 
+    height: 280px;
+  }
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  .carousel-controls {
+    padding: 0 10px;
+  }
+  .carousel-indicators {
+    bottom: 16px;
+    padding: 6px 12px;
+  }
+  .carousel-indicators button {
+    width: 10px;
+    height: 10px;
+  }
+  .carousel-indicators button.active {
+    width: 28px;
+  }
+}

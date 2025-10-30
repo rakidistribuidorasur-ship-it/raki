@@ -1,28 +1,10 @@
 /* ===========================
-   script.js — Raki catálogo (mejorado)
+   script.js — Raki catálogo
    =========================== */
 
 // Configuración EmailJS
 const EMAILJS_SERVICE_ID = 'service_ggzbnsk';
 const EMAILJS_TEMPLATE_ID = 'template_7xaxazk';
-
-// util: espera a que emailjs esté disponible (timeout opcional)
-function waitForEmailJS(timeout = 6000) {
-  return new Promise((resolve, reject) => {
-    if (window.emailjs && typeof window.emailjs.send === 'function') return resolve();
-    const start = Date.now();
-    const iv = setInterval(() => {
-      if (window.emailjs && typeof window.emailjs.send === 'function') {
-        clearInterval(iv);
-        return resolve();
-      }
-      if (Date.now() - start > timeout) {
-        clearInterval(iv);
-        return reject(new Error('EmailJS no cargó en tiempo'));
-      }
-    }, 120);
-  });
-}
 
 document.addEventListener('DOMContentLoaded', () => {
   // Animación aparición cards
@@ -67,7 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const overlay = modal.querySelector('.modal-overlay');
 
     function openModal({ img, title, desc, alt }) {
-      if (modalImg) { modalImg.src = img || ''; modalImg.alt = alt || title || 'Imagen del producto'; }
+      if (modalImg) { 
+        modalImg.src = img || ''; 
+        modalImg.alt = alt || title || 'Imagen del producto'; 
+      }
       if (modalTitle) modalTitle.textContent = title || '';
       if (modalDesc) modalDesc.textContent = desc || '';
       modal.classList.add('open');
@@ -75,10 +60,19 @@ document.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = 'hidden';
       closeBtn?.focus();
 
+      // Actualizar WhatsApp con el producto seleccionado
       if (whatsappFab && title) {
-        const base = 'https://wa.me/56984131147';
+        const phoneNumber = '56984131147';
         const text = `Hola Raki 🌟, quiero información sobre: ${title}`;
-        whatsappFab.href = `${base}?text=${encodeURIComponent(text)}`;
+        whatsappFab.href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`;
+      }
+      
+      // Analytics
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'view_item', {
+          event_category: 'engagement',
+          event_label: title
+        });
       }
     }
 
@@ -87,20 +81,27 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.setAttribute('aria-hidden', 'true');
       if (modalImg) modalImg.src = '';
       document.body.style.overflow = '';
+      
+      // Restaurar WhatsApp a mensaje por defecto
       if (whatsappFab) {
-        whatsappFab.href = 'https://wa.me/56984131147?text=Hola%20Raki%20%F0%9F%8C%9F%2C%20quiero%20informaci%C3%B3n%20sobre%20sus%20productos';
+        const phoneNumber = '56984131147';
+        const defaultText = 'Hola Raki 🌟, quiero información sobre sus productos';
+        whatsappFab.href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultText)}`;
       }
     }
 
+    // Agregar eventos a las cards existentes
     const cardEls = document.querySelectorAll('.card');
     if (cardEls.length > 0) {
       cardEls.forEach(card => {
         card.style.cursor = 'pointer';
         if (!card.hasAttribute('tabindex')) card.setAttribute('tabindex', '0');
+        
         card.addEventListener('click', () => {
           const imgEl = card.querySelector('img');
           const titleEl = card.querySelector('.card-content h3');
           const descEl = card.querySelector('.card-content p:not(.price)');
+          
           openModal({
             img: imgEl ? imgEl.src : '',
             alt: imgEl ? (imgEl.alt || '') : '',
@@ -108,53 +109,70 @@ document.addEventListener('DOMContentLoaded', () => {
             desc: descEl ? descEl.textContent.trim() : ''
           });
         });
+        
         card.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); card.click(); }
+          if (e.key === 'Enter' || e.key === ' ') { 
+            e.preventDefault(); 
+            card.click(); 
+          }
         });
       });
     }
 
     overlay?.addEventListener('click', closeModal);
     closeBtn?.addEventListener('click', closeModal);
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+    document.addEventListener('keydown', (e) => { 
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); 
+    });
   }
 
-  /* --- Contacto: abrir/ocultar, enviar --- */
+  /* ============================================
+     FORMULARIO DE CONTACTO
+     ============================================ */
   const contactSection = document.getElementById('contact');
   const cta = document.getElementById('cta-contact');
   const closeContact = document.getElementById('close-contact');
   const contactForm = document.getElementById('contact-form');
   const feedback = document.getElementById('contact-feedback');
 
-  // Usar inert cuando esté cerrado (mejor que aria-hidden si hay foco)
-  function setInert(el, state) {
-    try { el.inert = state; } catch (e) { /* inert no soportado: ignorar */ }
-  }
-
-  function setContactOpen(open, options = {}) {
+  // Abrir/cerrar formulario
+  function setContactOpen(open) {
     if (!contactSection) return;
+    
     if (open) {
-      setInert(contactSection, false);
       contactSection.classList.remove('collapsed');
       contactSection.setAttribute('aria-hidden', 'false');
-      contactSection.setAttribute('aria-expanded', 'true');
+      contactSection.removeAttribute('inert');
       cta?.setAttribute('aria-expanded', 'true');
-      contactSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => contactForm?.querySelector('input[name="name"]')?.focus(), 350);
-    } else {
-      const active = document.activeElement;
-      if (active && contactSection.contains(active)) {
-        cta?.focus();
+      
+      // Scroll suave al formulario
+      setTimeout(() => {
+        contactSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+      
+      // Focus en el primer campo
+      setTimeout(() => {
+        const firstInput = contactForm?.querySelector('input[name="name"]');
+        firstInput?.focus();
+      }, 400);
+      
+      // Analytics
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'contact_form_open', {
+          event_category: 'engagement',
+          event_label: 'CTA Button'
+        });
       }
+    } else {
       contactSection.classList.add('collapsed');
       contactSection.setAttribute('aria-hidden', 'true');
-      contactSection.setAttribute('aria-expanded', 'false');
+      contactSection.setAttribute('inert', '');
       cta?.setAttribute('aria-expanded', 'false');
-      setInert(contactSection, true);
-      if (options.returnFocus) cta?.focus();
+      cta?.focus();
     }
   }
 
+  // Evento CTA flotante
   if (cta) {
     cta.addEventListener('click', (e) => {
       e.preventDefault();
@@ -162,109 +180,164 @@ document.addEventListener('DOMContentLoaded', () => {
       setContactOpen(!isOpen);
     });
   }
-  if (closeContact) closeContact.addEventListener('click', () => setContactOpen(false, { returnFocus: true }));
 
+  // Botón cerrar formulario
+  if (closeContact) {
+    closeContact.addEventListener('click', () => {
+      setContactOpen(false);
+    });
+  }
+
+  // Cerrar con ESC
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && contactSection && !contactSection.classList.contains('collapsed')) {
-      setContactOpen(false, { returnFocus: true });
+      setContactOpen(false);
     }
   });
 
-  document.getElementById('clear-contact')?.addEventListener('click', () => {
-    contactForm?.reset();
-    if (feedback) feedback.textContent = '';
-  });
+  // Botón limpiar
+  const clearBtn = document.getElementById('clear-contact');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      contactForm?.reset();
+      if (feedback) feedback.textContent = '';
+    });
+  }
 
+  // ENVÍO DEL FORMULARIO - CORREGIDO
   if (contactForm) {
     contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      
       const submitBtn = contactForm.querySelector('button[type="submit"]');
       const fd = new FormData(contactForm);
-      const from_name = (fd.get('name') || '').toString().trim();
-      const reply_to = (fd.get('email') || '').toString().trim();
-      const phone = (fd.get('phone') || '').toString().trim();
-      const category = (fd.get('category') || '').toString().trim();
-      const message = (fd.get('message') || '').toString().trim();
+      
+      // Obtener datos del formulario
+      const from_name = fd.get('name')?.toString().trim() || '';
+      const reply_to = fd.get('email')?.toString().trim() || '';
+      const phone = fd.get('phone')?.toString().trim() || '';
+      const category = fd.get('category')?.toString().trim() || '';
+      const message = fd.get('message')?.toString().trim() || '';
 
+      // Validación básica
       if (!from_name || !reply_to || !message) {
-        if (feedback) { feedback.textContent = 'Por favor completa los campos requeridos (*).'; feedback.style.color = 'crimson'; }
+        if (feedback) {
+          feedback.textContent = '⚠️ Por favor completa todos los campos requeridos (*)';
+          feedback.style.color = '#c74242';
+        }
         return;
       }
 
+      // Deshabilitar botón y mostrar estado
       submitBtn?.setAttribute('disabled', 'true');
       submitBtn?.classList.add('sending');
-      if (feedback) { feedback.textContent = 'Enviando...'; feedback.style.color = '#444'; }
-
-      const templateParams = { from_name, reply_to, phone, category, message };
-
-      const hasService = EMAILJS_SERVICE_ID && EMAILJS_SERVICE_ID !== 'TU_SERVICE_ID';
-      if (!hasService) {
-        const subject = encodeURIComponent(`Contacto web: ${from_name} - ${category || 'Sin categoría'}`);
-        const body = encodeURIComponent(`Nombre/Empresa: ${from_name}\nEmail: ${reply_to}\nTeléfono: ${phone}\nCategoría: ${category}\n\nMensaje:\n${message}`);
-        window.location.href = `mailto:raki.distribuidora.sur@gmail.com?subject=${subject}&body=${body}`;
-        if (feedback) { feedback.textContent = 'Se abrió su cliente de correo. Si no, envíe manualmente a raki.distribuidora.sur@gmail.com'; feedback.style.color = '#2c6f4b'; }
-        contactForm.reset();
-        submitBtn?.removeAttribute('disabled');
-        submitBtn?.classList.remove('sending');
-        setContactOpen(false, { returnFocus: true });
-        return;
+      
+      if (feedback) {
+        feedback.textContent = '⏳ Enviando mensaje...';
+        feedback.style.color = '#666';
       }
 
+      // Preparar datos para EmailJS
+      const templateParams = {
+        from_name: from_name,
+        reply_to: reply_to,
+        phone: phone || 'No proporcionado',
+        category: category || 'Sin categoría',
+        message: message
+      };
+
       try {
-        await waitForEmailJS(6000);
-        await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
-        if (feedback) { feedback.textContent = 'Mensaje enviado correctamente. Gracias.'; feedback.style.color = '#2c6f4b'; }
+        // Verificar que EmailJS esté cargado
+        if (!window.emailjs || typeof window.emailjs.send !== 'function') {
+          throw new Error('EmailJS no está disponible');
+        }
+
+        // Enviar con EmailJS
+        await window.emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          templateParams
+        );
+
+        // Éxito
+        if (feedback) {
+          feedback.textContent = '✅ ¡Mensaje enviado correctamente! Te contactaremos pronto.';
+          feedback.style.color = '#2c6f4b';
+        }
+
+        // Analytics
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'form_submit', {
+            event_category: 'conversion',
+            event_label: 'Contact Form Success'
+          });
+        }
+
+        // Limpiar formulario
         contactForm.reset();
-        setTimeout(() => setContactOpen(false, { returnFocus: true }), 800);
-      } catch (err) {
-        console.error('EmailJS error / fallback:', err);
-        const subject = encodeURIComponent(`Contacto web: ${from_name} - ${category || 'Sin categoría'}`);
-        const body = encodeURIComponent(`Nombre/Empresa: ${from_name}\nEmail: ${reply_to}\nTeléfono: ${phone}\nCategoría: ${category}\n\nMensaje:\n${message}`);
-        window.location.href = `mailto:raki.distribuidora.sur@gmail.com?subject=${subject}&body=${body}`;
-        if (feedback) { feedback.textContent = 'No fue posible enviar desde el sitio, se abrirá su cliente de correo.'; feedback.style.color = '#2c6f4b'; }
-        contactForm.reset();
-        setContactOpen(false, { returnFocus: true });
+
+        // Cerrar formulario después de 2 segundos
+        setTimeout(() => {
+          setContactOpen(false);
+          if (feedback) feedback.textContent = '';
+        }, 2000);
+
+      } catch (error) {
+        console.error('Error al enviar formulario:', error);
+
+        // Fallback: abrir cliente de correo
+        const subject = encodeURIComponent(`Contacto web: ${from_name}`);
+        const body = encodeURIComponent(
+          `Nombre/Empresa: ${from_name}\n` +
+          `Email: ${reply_to}\n` +
+          `Teléfono: ${phone}\n` +
+          `Categoría: ${category}\n\n` +
+          `Mensaje:\n${message}`
+        );
+
+        if (feedback) {
+          feedback.textContent = '⚠️ Error al enviar. Abriendo tu cliente de correo...';
+          feedback.style.color = '#ff7a59';
+        }
+
+        // Abrir mailto después de 1 segundo
+        setTimeout(() => {
+          window.location.href = `mailto:raki.distribuidora.sur@gmail.com?subject=${subject}&body=${body}`;
+        }, 1000);
+
       } finally {
+        // Rehabilitar botón
         submitBtn?.removeAttribute('disabled');
         submitBtn?.classList.remove('sending');
       }
     });
   }
 
-  /* --- Carrusel simple (2 imágenes) --- */
+  /* ============================================
+     CARRUSEL
+     ============================================ */
   const carouselEl = document.querySelector('[data-carousel]');
   if (carouselEl) {
     const track = carouselEl.querySelector('[data-track]');
-    if (!track) return; // nada que hacer sin track
+    if (!track) return;
+    
     let slides = Array.from(track.children).filter(n => n.nodeType === 1);
     const prevBtn = carouselEl.querySelector('.carousel-btn.prev');
     const nextBtn = carouselEl.querySelector('.carousel-btn.next');
-    let indicators = Array.from(carouselEl.querySelectorAll('.carousel-indicators button'));
+    const indicatorsWrap = carouselEl.querySelector('.carousel-indicators');
     const total = slides.length;
+    
     if (total === 0) return;
 
-    // crear indicadores si no existen o si la cantidad no coincide
-    const indicatorsWrap = carouselEl.querySelector('.carousel-indicators');
-    if (!indicatorsWrap) {
-      const wrap = document.createElement('div');
-      wrap.className = 'carousel-indicators';
-      wrap.setAttribute('role', 'tablist');
-      slides.forEach((_, i) => {
-        const btn = document.createElement('button');
-        btn.dataset.slide = String(i);
-        btn.setAttribute('role', 'tab');
-        btn.setAttribute('aria-controls', `slide-${i}`);
-        wrap.appendChild(btn);
-      });
-      carouselEl.appendChild(wrap);
-      indicators = Array.from(wrap.querySelectorAll('button'));
-    } else if (indicators.length !== total) {
+    // Crear indicadores si no existen
+    let indicators = [];
+    if (indicatorsWrap) {
       indicatorsWrap.innerHTML = '';
       slides.forEach((_, i) => {
         const btn = document.createElement('button');
         btn.dataset.slide = String(i);
         btn.setAttribute('role', 'tab');
-        btn.setAttribute('aria-controls', `slide-${i}`);
+        btn.setAttribute('aria-label', `Ir a imagen ${i + 1}`);
         indicatorsWrap.appendChild(btn);
       });
       indicators = Array.from(indicatorsWrap.querySelectorAll('button'));
@@ -279,105 +352,67 @@ document.addEventListener('DOMContentLoaded', () => {
       current = ((index % total) + total) % total;
       const offset = -current * 100;
       track.style.transform = `translateX(${offset}%)`;
+      
       indicators.forEach((btn, i) => {
         btn.classList.toggle('active', i === current);
         btn.setAttribute('aria-selected', i === current ? 'true' : 'false');
       });
+      
+      // Analytics
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'carousel_navigate', {
+          event_category: 'engagement',
+          event_label: `Slide ${current + 1}`
+        });
+      }
     }
 
+    // Navegación
     prevBtn?.addEventListener('click', () => { goTo(current - 1); restartAuto(); });
     nextBtn?.addEventListener('click', () => { goTo(current + 1); restartAuto(); });
-    indicators.forEach(btn => btn.addEventListener('click', () => { goTo(Number(btn.dataset.slide)); restartAuto(); }));
+    indicators.forEach(btn => {
+      btn.addEventListener('click', () => { 
+        goTo(Number(btn.dataset.slide)); 
+        restartAuto(); 
+      });
+    });
 
-    function startAuto() { stopAuto(); autoplay = setInterval(() => goTo(current + 1), 5000); }
-    function stopAuto() { if (autoplay) { clearInterval(autoplay); autoplay = null; } }
-    function restartAuto() { stopAuto(); startAuto(); }
+    // Autoplay
+    function startAuto() { 
+      stopAuto(); 
+      autoplay = setInterval(() => goTo(current + 1), 5000); 
+    }
+    
+    function stopAuto() { 
+      if (autoplay) {
+        clearInterval(autoplay);
+        autoplay = null;
+      }
+    }
 
-    // touch / swipe
+    // Gestos táctiles
     track.addEventListener('touchstart', (e) => {
       startX = e.touches[0].clientX;
-      deltaX = 0;
-      track.style.transition = 'none';
       stopAuto();
-    }, { passive: true });
+    });
 
     track.addEventListener('touchmove', (e) => {
       deltaX = e.touches[0].clientX - startX;
-      const pct = (deltaX / carouselEl.clientWidth) * 100;
-      track.style.transform = `translateX(${ -current * 100 + pct }%)`;
-    }, { passive: true });
-
-    track.addEventListener('touchend', () => {
-      track.style.transition = '';
-      if (Math.abs(deltaX) > (carouselEl.clientWidth * 0.15)) {
-        if (deltaX > 0) goTo(current - 1);
-        else goTo(current + 1);
-      } else {
-        goTo(current);
-      }
-      restartAuto();
+      track.style.transform = `translateX(${-current * 100 + (deltaX / window.innerWidth) * 100}%)`;
     });
 
-    // pausa al hover / focus
-    carouselEl.addEventListener('mouseenter', stopAuto);
-    carouselEl.addEventListener('mouseleave', startAuto);
-    carouselEl.addEventListener('focusin', stopAuto);
-    carouselEl.addEventListener('focusout', startAuto);
+    track.addEventListener('touchend', (e) => {
+      if (Math.abs(deltaX) > 50) {
+        if (deltaX < 0) goTo(current + 1); // Izquierda
+        else goTo(current - 1); // Derecha
+      } else {
+        goTo(current); // Retornar a la posición actual
+      }
+      startAuto();
+    });
 
-    // teclado (solo si existen botones)
-    if (prevBtn || nextBtn) {
-      const onKey = (e) => {
-        if (e.key === 'ArrowLeft') prevBtn?.click();
-        if (e.key === 'ArrowRight') nextBtn?.click();
-      };
-      document.addEventListener('keydown', onKey);
-    }
-
-    // init
-    track.style.willChange = 'transform';
+    // Inicializar
     goTo(0);
     startAuto();
-  } // end carousel
-
-  // Botón WhatsApp
-  const wspBtn = document.getElementById('whatsapp-fab');
-  if (wspBtn) {
-    wspBtn.addEventListener('click', (e) => {
-      // Analytics: track WhatsApp click
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'click', {
-          event_category: 'engagement',
-          event_label: 'WhatsApp FAB'
-        });
-      }
-      // URL correcta
-      const phoneNumber = '56984131147';
-      const message = encodeURIComponent('Hola Raki 🌟, quiero información sobre sus productos');
-      wspBtn.href = `https://wa.me/${phoneNumber}?text=${message}`;
-    });
   }
-
-}); // end DOMContentLoaded
-
-// Filtrado por sección
-function filterCategory(category) {
-  const sections = document.querySelectorAll("section");
-  sections.forEach(sec => {
-    if (category === "all" || sec.classList.contains(category)) sec.classList.remove("hidden");
-    else sec.classList.add("hidden");
-  });
-}
-
-/* Ignorar archivos de sistema
-.DS_Store
-Thumbs.db
-
-# Ignorar node_modules si usas npm
-node_modules/
-
-# Ignorar archivos de editor
-.vscode/
-.idea/
-*.swp
-*.swo
-*~ */
+});
