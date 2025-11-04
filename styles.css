@@ -11,6 +11,7 @@ body {
   margin: 0;
   padding: 0;
   transition: background-color 0.3s ease;
+  overflow-x: hidden; /* Evita scroll horizontal */
 }
 
 header {
@@ -55,7 +56,7 @@ header p {
 
 /* ajuste del logo en el header */
 .site-logo {
-  height: 300px;      /* tamaño aumentado */
+  height: 150px;      /* tamaño aumentado */
   max-height: 340px;  /* límite para pantallas muy grandes */
   width: auto;
   display: block;
@@ -253,7 +254,9 @@ footer a:hover {
   outline-offset: 3px;
 }
 
-/* Responsive para tablet */
+/* ========================================
+   MEDIA QUERIES
+   ======================================== */
 @media (max-width: 1024px) {
   .social-links {
     justify-content: flex-start;
@@ -277,7 +280,12 @@ footer a:hover {
   }
 }
 
-/* Responsive para móvil */
+@media (max-width: 768px) {
+  .carousel { 
+    height: 350px; 
+  }
+}
+
 @media (max-width: 640px) {
   .social-links {
     justify-content: flex-start;
@@ -323,5 +331,14 @@ footer a:hover {
   }
   .carousel-indicators button.active {
     width: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .carousel { 
+    height: 250px; 
+  }
+  .site-logo {
+    height: 80px;
   }
 }
