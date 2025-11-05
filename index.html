@@ -216,6 +216,7 @@
       border: none;
       outline: none;
       vertical-align: top;
+      cursor: pointer;
     }
     .carousel-controls { display: none; }
     .carousel-indicators {
@@ -387,6 +388,35 @@
         border-radius: 50%;
         justify-content: center;
       }
+    }
+
+    /* Estilos del modal de carrusel */
+    .modal-content--dark {
+      background:#0f0f0f;
+      color:#f5f5f5;
+      border-radius:10px;
+      padding:20px;
+      gap:20px;
+    }
+    .modal-content--dark .modal-img {
+      border-radius:8px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.45);
+    }
+    .modal-copy {
+      font-family:'Lora', serif;
+      max-width:320px;
+      line-height:1.4;
+    }
+    .modal-copy h3 {
+      font-family:'Playfair Display', serif;
+      font-size:1.6rem;
+      margin:0 0 12px;
+      color:#ff7a59;
+    }
+    .modal-copy p {
+      margin:0;
+      font-size:1rem;
+      color:#e2e2e2;
     }
   </style>
 </head>
@@ -597,6 +627,20 @@
       <div>
         <h2 id="modal-title" class="modal-title"></h2>
         <p class="modal-desc"></p>
+      </div>
+    </article>
+  </aside>
+
+  <!-- Modal carrusel -->
+  <aside id="carousel-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="carousel-modal-title" aria-hidden="true" inert>
+    <div class="modal-overlay"></div>
+    <article class="modal-content modal-content--dark">
+      <button class="modal-close" type="button" aria-label="Cerrar modal">&times;</button>
+      <img src="./assets/sabhumo2.webp" alt="Afiche Sab Humo" class="modal-img" loading="lazy" />
+      <div class="modal-copy">
+        <h3 id="carousel-modal-title"Sab-Humo /h3>
+        <p>Descubre el secreto del auténtico sabor del sur.
+Sabhumo transforma cada asado en una experiencia sensorial: humo, aroma y tradición se combinan en trozos de madera nativa seleccionada que despiertan los sabores más profundos de tu parrilla. No es solo ahumar, es conectar con la esencia del bosque chileno, directo del sur a tu mesa..</p>
       </div>
     </article>
   </aside>

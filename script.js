@@ -416,5 +416,50 @@ document.addEventListener('DOMContentLoaded', () => {
     startAuto();
   }
 
+  const carouselSlides = document.querySelectorAll('.carousel-slide img');
+  const carouselModal = document.getElementById('carousel-modal');
+
+  if (carouselSlides.length && carouselModal) {
+    const carouselClose = carouselModal.querySelector('.modal-close');
+    const carouselOverlay = carouselModal.querySelector('.modal-overlay');
+    let lastFocusedElement = null;
+
+    const openCarouselModal = () => {
+      lastFocusedElement = document.activeElement;
+      carouselModal.classList.add('open');
+      carouselModal.removeAttribute('aria-hidden');
+      carouselModal.removeAttribute('inert');
+      document.body.style.overflow = 'hidden';
+      carouselClose.focus();
+
+      if (typeof trackEvent === 'function') {
+        trackEvent('modal_open', 'carousel', 'sab_humo');
+      }
+    };
+
+    const closeCarouselModal = () => {
+      carouselModal.classList.remove('open');
+      carouselModal.setAttribute('aria-hidden', 'true');
+      carouselModal.setAttribute('inert', '');
+      document.body.style.overflow = '';
+      if (lastFocusedElement) {
+        lastFocusedElement.focus();
+      }
+    };
+
+    carouselSlides.forEach((img) => {
+      img.addEventListener('click', openCarouselModal);
+    });
+
+    carouselClose.addEventListener('click', closeCarouselModal);
+    carouselOverlay.addEventListener('click', closeCarouselModal);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && carouselModal.classList.contains('open')) {
+        closeCarouselModal();
+      }
+    });
+  }
+
   // Agregar al script.js eventos adicionales para productos, carrusel, etc.
 });
