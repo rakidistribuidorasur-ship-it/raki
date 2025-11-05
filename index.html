@@ -401,6 +401,9 @@
     .modal-content--dark .modal-img {
       border-radius:8px;
       box-shadow:0 10px 30px rgba(0,0,0,0.45);
+      max-width:100%;
+      width:100%;
+      height:auto;
     }
     .modal-copy {
       font-family:'Lora', serif;
@@ -417,6 +420,29 @@
       margin:0;
       font-size:1rem;
       color:#e2e2e2;
+    }
+
+    @media (min-width: 1024px) {
+      .modal-content--dark {
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+        padding: 40px 60px;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+      }
+      .modal-content--dark .modal-img {
+        max-width: 48%;
+        width: 48%;
+        height: auto;
+      }
+      .modal-copy {
+        max-width: 420px;
+        font-size: 1.08rem;
+      }
     }
   </style>
 </head>
@@ -638,7 +664,7 @@
       <button class="modal-close" type="button" aria-label="Cerrar modal">&times;</button>
       <img src="./assets/sabhumo2.webp" alt="Afiche Sab Humo" class="modal-img" loading="lazy" />
       <div class="modal-copy">
-        <h3 id="carousel-modal-title"Sab-Humo /h3>
+        <h3 id="carousel-modal-title">Sab Humo</h3>
         <p>Descubre el secreto del auténtico sabor del sur.
 Sabhumo transforma cada asado en una experiencia sensorial: humo, aroma y tradición se combinan en trozos de madera nativa seleccionada que despiertan los sabores más profundos de tu parrilla. No es solo ahumar, es conectar con la esencia del bosque chileno, directo del sur a tu mesa..</p>
       </div>
