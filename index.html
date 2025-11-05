@@ -174,10 +174,10 @@
     /* Carrusel optimizado */
     .hero-carousel {
       position: relative;
-      width: 100vw;
-      left: 50%;
-      transform: translateX(-50%);
+      width: 100%;
       margin: 0;
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
       overflow: hidden;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       padding: 0;
@@ -186,7 +186,7 @@
     .carousel {
       position: relative;
       width: 100%;
-      height: 500px;
+      height: min(500px, 60vh);
       margin: 0;
       padding: 0;
       overflow: hidden;
@@ -307,52 +307,7 @@
     }
 
     @media (max-width: 640px) {
-      .modal-content { flex-direction: column; align-items: center; }
-      .modal-img { width: 100%; max-width: 100%; }
-      .contact-grid { grid-template-columns: 1fr; }
-      
-      .fab-btn { 
-        right: 12px; 
-        padding: 10px 12px; 
-        font-size: 0.85rem; 
-      }
-      
-      /* Botón CTA más compacto en móvil */
-      .cta-contact { 
-        bottom: 120px; /* Más arriba para evitar solapamiento con footer */
-        padding: 10px 14px;
-        font-size: 0.82rem;
-        max-width: 140px;
-        text-align: center;
-      }
-      .cta-contact .pulse {
-        width: 8px;
-        height: 8px;
-      }
-      .cta-contact .cta-text {
-        display: none;
-      }
-      .cta-contact .cta-text-short {
-        display: inline;
-      }
-      
-      .whatsapp-fab { 
-        bottom: 180px; /* Ajustar posición del WhatsApp */
-        font-size: 0.88rem; 
-      }
-      .whatsapp-fab .wsp-label { display: none; }
-      
-      .header-divider { height: 3px; margin: 15px 0; }
-      .header-divider::before { width: 40px; height: 6px; }
-      
       .carousel { height: 280px; }
-      .carousel-btn { width: 40px; height: 40px; font-size: 1.2rem; }
-      .carousel-controls { padding: 0 10px; }
-      .carousel-indicators {
-        bottom: 12px;
-        gap: 6px;
-      }
-      .carousel-indicators button { width: 8px; height: 8px; }
     }
 
     @media (max-width: 480px) {
