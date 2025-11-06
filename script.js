@@ -461,5 +461,73 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Cargar productos desde JSON (con caché simple)
+  let productosCargados = false;
+  if (!productosCargados) {
+    fetch('./productos.json')
+      .then(response => response.json())
+      .then(data => {
+        productosCargados = true; // Marcar como cargado
+        // Generar secciones dinámicamente
+        Object.keys(data).forEach(categoria => {
+          const section = document.querySelector(`.${categoria}`);
+          if (section) {
+            const grid = section.querySelector('.grid');
+            data[categoria].forEach(producto => {
+              const card = document.createElement('article');
+              card.className = 'card';
+              card.onclick = () => trackEvent('product_click', categoria, producto.id, parseInt(producto.precio.replace(/\D/g, '')));
+              card.innerHTML = `
+                <img src="${producto.imagen}" alt="${producto.titulo}" loading="lazy" />
+                <div class="card-content">
+                  <h3>${producto.titulo}</h3>
+                  <p>${producto.descripcion}</p>
+                  <p class="price">${producto.precio}</p>
+                </div>
+              `;
+              grid.appendChild(card);
+            });
+          }
+        });
+      })
+      .catch(error => console.error('Error cargando productos:', error));
+  }
+  
+  // Lazy load de productos por sección
+  const observerSecciones = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !entry.target.dataset.loaded) {
+        entry.target.dataset.loaded = true;
+        const categoria = entry.target.className.split(' ')[0]; // Asume que la clase es 'productos', 'carnicos', etc.
+        fetch('./productos.json')
+          .then(response => response.json())
+          .then(data => {
+            if (data[categoria]) {
+              const grid = entry.target.querySelector('.grid');
+              data[categoria].forEach(producto => {
+                const card = document.createElement('article');
+                card.className = 'card';
+                card.onclick = () => trackEvent('product_click', categoria, producto.id, parseInt(producto.precio.replace(/\D/g, '')));
+                card.innerHTML = `
+                  <img src="${producto.imagen}" alt="${producto.titulo}" loading="lazy" />
+                  <div class="card-content">
+                    <h3>${producto.titulo}</h3>
+                    <p>${producto.descripcion}</p>
+                    <p class="price">${producto.precio}</p>
+                  </div>
+                `;
+                grid.appendChild(card);
+              });
+            }
+          });
+      }
+    });
+  }, { threshold: 0.1 });
+
+  // Observar secciones
+  document.querySelectorAll('section.productos, section.carnicos, section.gourmet, section.bebidas').forEach(section => {
+    observerSecciones.observe(section);
+  });
+  
   // Agregar al script.js eventos adicionales para productos, carrusel, etc.
 });
