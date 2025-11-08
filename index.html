@@ -7,7 +7,7 @@
   <title>Catálogo Mayorista — Raki Productos del Sur de Chile</title>
 
   <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-T7MQ65QT');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[]= [];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-T7MQ65QT');</script>
   <!-- End Google Tag Manager -->
 
   <!-- Google Analytics 4 -->
@@ -30,7 +30,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500&family=Lora&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 </head>
@@ -102,127 +102,13 @@
     <!-- Embutidos y Cárnicos -->
     <section class="carnicos" aria-labelledby="carnicos-title">
       <h2 id="carnicos-title">🥓 Embutidos y Cárnicos</h2>
-      <div class="grid">
-        <article class="card" onclick="trackEvent('product_click','carnicos','longaniza_artesanal',3900)">
-          <img src="./assets/longa.webp" alt="Longaniza artesanal" loading="lazy" />
-          <div class="card-content">
-            <h3>Longaniza Artesanal</h3>
-            <p>Curada y condimentada, ideal para revender.</p>
-            <p class="price">Por mayor: $3.900</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','carnicos','salchichas_artesanales',3200)">
-          <img src="./assets/Salchichas.webp" alt="Salchichas artesanales" loading="lazy" />
-          <div class="card-content">
-            <h3>Salchichas Artesanales</h3>
-            <p>Variedades: clásica, ahumada y merkén.</p>
-            <p class="price">Por mayor: $3.200</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','carnicos','pate_casero',2600)">
-          <img src="./assets/pate.webp" alt="Paté casero" loading="lazy" />
-          <div class="card-content">
-            <h3>Paté Casero</h3>
-            <p>Paté de cerdo y aves, presentación para venta.</p>
-            <p class="price">Por mayor: $2.600</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','carnicos','jamon_ahumado',8500)">
-          <img src="./assets/jamon.ahumado.webp" alt="Jamón ahumado" loading="lazy" />
-          <div class="card-content">
-            <h3>Jamón Ahumado</h3>
-            <p>Curación tradicional con ahumado suave.</p>
-            <p class="price">Por mayor: $8.500</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','carnicos','carne_ahumada',7200)">
-          <img src="./assets/lomoahumado.webp" alt="Carne ahumada" loading="lazy" />
-          <div class="card-content">
-            <h3>Carne Ahumada</h3>
-            <p>Trozos ahumados listos para cortar.</p>
-            <p class="price">Por mayor: $7.200</p>
-          </div>
-        </article>
-      </div>
+      <div class="grid" data-category="carnicos"></div>
     </section>
 
     <!-- Productos Naturales y Gourmet -->
     <section class="gourmet" aria-labelledby="gourmet-title">
       <h2 id="gourmet-title">🍯 Productos Naturales y Gourmet</h2>
-      <div class="grid">
-        <article class="card" onclick="trackEvent('product_click','gourmet','miel_bosque_valdiviano',4800)">
-          <img src="./assets/miel.webp" alt="Miel pura" loading="lazy" />
-          <div class="card-content">
-            <h3>Miel</h3>
-            <p>Miel pura del bosque valdiviano, aroma floral intenso.</p>
-            <p class="price">Por mayor: $4.800</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','gourmet','mermeladas_artesanales',3200)">
-          <img src="./assets/mermeladas.webp" alt="Mermeladas artesanales" loading="lazy" />
-          <div class="card-content">
-            <h3>Mermeladas Artesanales</h3>
-            <p>Murta, mora y frambuesa, sin preservantes.</p>
-            <p class="price">Por mayor: $3.200</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','gourmet','conservas_caseras',3500)">
-          <img src="./assets/conservas.webp" alt="Conservas caseras" loading="lazy" />
-          <div class="card-content">
-            <h3>Conservas Caseras</h3>
-            <p>Vegetales y pescados en aceite y escabeche.</p>
-            <p class="price">Por mayor: $3.500</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','gourmet','frutos_secos_mix',2900)">
-          <img src="./assets/frutossecos.webp" alt="Frutos secos - mix" loading="lazy" />
-          <div class="card-content">
-            <h3>Frutos Secos Mix</h3>
-            <p>Maní, nuez y almendra — ideal para comercio.</p>
-            <p class="price">Por mayor: $2.900</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','gourmet','alino_merken',1800)">
-          <img src="./assets/merken.webp" alt="Aliño merkén" loading="lazy" />
-          <div class="card-content">
-            <h3>Aliño Merkén</h3>
-            <p>Pimentón ahumado con merkén — toque picante.</p>
-            <p class="price">Por mayor: $1.800</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','gourmet','madera_aromatizada',4200)">
-          <img src="./assets/leñahumo.webp" alt="Trozos de madera aromatizados" loading="lazy" />
-          <div class="card-content">
-            <h3>Trozos de Madera Aromatizados</h3>
-            <p>Para ahumar y dar aroma en cocina y parrilla.</p>
-            <p class="price">Por mayor: $4.200</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','gourmet','chocolates_artesanales',3600)">
-          <img src="./assets/choco.webp" alt="Chocolates artesanales" loading="lazy" />
-          <div class="card-content">
-            <h3>Chocolates, Bombones y Trufas</h3>
-            <p>Selección artesanal: tabletas, bombones y trufas.</p>
-            <p class="price">Por mayor: $3.600</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','gourmet','alfajores_manjar',2400)">
-          <img src="./assets/alfa.webp" alt="Alfajores" loading="lazy" />
-          <div class="card-content">
-            <h3>Alfajores</h3>
-            <p>Rellenos con manjar casero — ideal para revender.</p>
-            <p class="price">Por mayor: $2.400</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','gourmet','manjar_tradicional',2200)">
-          <img src="./assets/manjar.webp" alt="Manjar" loading="lazy" />
-          <div class="card-content">
-            <h3>Manjar</h3>
-            <p>Manjar tradicional, textura cremosa.</p>
-            <p class="price">Por mayor: $2.200</p>
-          </div>
-        </article>
-      </div>
+      <div class="grid" data-category="gourmet"></div>
     </section>
 
     <!-- Salsas -->

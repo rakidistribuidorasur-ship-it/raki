@@ -467,28 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('./productos.json')
       .then(response => response.json())
       .then(data => {
-        productosCargados = true; // Marcar como cargado
-        // Generar secciones dinámicamente
-        Object.keys(data).forEach(categoria => {
-          const section = document.querySelector(`.${categoria}`);
-          if (section) {
-            const grid = section.querySelector('.grid');
-            data[categoria].forEach(producto => {
-              const card = document.createElement('article');
-              card.className = 'card';
-              card.onclick = () => trackEvent('product_click', categoria, producto.id, parseInt(producto.precio.replace(/\D/g, '')));
-              card.innerHTML = `
-                <img src="${producto.imagen}" alt="${producto.titulo}" loading="lazy" />
-                <div class="card-content">
-                  <h3>${producto.titulo}</h3>
-                  <p>${producto.descripcion}</p>
-                  <p class="price">${producto.precio}</p>
-                </div>
-              `;
-              grid.appendChild(card);
-            });
-          }
-        });
+        Object.entries(data).forEach(([categoria, items]) => renderProductos(categoria, items));
       })
       .catch(error => console.error('Error cargando productos:', error));
   }
@@ -531,3 +510,23 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Agregar al script.js eventos adicionales para productos, carrusel, etc.
 });
+
+const renderProductos = (categoria, productos) => {
+  const grid = document.querySelector(`.grid[data-category="${categoria}"]`);
+  if (!grid) return;
+  grid.innerHTML = '';
+  productos.forEach(producto => {
+    const card = document.createElement('article');
+    card.className = 'card';
+    card.onclick = () => trackEvent('product_click', categoria, producto.id, producto.valor || 0);
+    card.innerHTML = `
+      <img src="${producto.imagen}" alt="${producto.titulo}" loading="lazy" />
+      <div class="card-content">
+        <h3>${producto.titulo}</h3>
+        <p>${producto.descripcion}</p>
+        <p class="price">${producto.precio}</p>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+};
