@@ -44,18 +44,19 @@ a:hover{ text-decoration:underline; }
    Header
 =========================== */
 header{
-  max-width:var(--container);
-  margin:0 auto;
-  padding:20px 1.5rem 8px;
+  max-width:none;
+  width:100%;
+  margin:0;
+  padding:60px 1.5rem 32px;
   text-align:center;
-  background-image: url('./assets/portada.webp'); /* imagen de fondo; reemplaza si no existe */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius:8px; /* opcional para estilo */
+  background-image:url('./assets/portada.webp');
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  min-height:280px;
 }
 .site-logo{
-  height:64px;
+  height:100px;
   width:auto;
   margin:0 auto 8px;
   display:block;
@@ -227,9 +228,11 @@ h2{
   align-items:flex-start;
 }
 #carousel-modal .modal-img{
-  width:min(46%, 380px);
-  max-height:70vh;
-  object-fit:cover;
+  width:min(50%, 440px);
+  max-height:80vh;
+  height:auto;
+  object-fit:contain;
+  background:#000;
   border-radius:6px;
 }
 #carousel-modal .modal-copy{
@@ -250,6 +253,23 @@ h2{
   #carousel-modal .modal-copy{
     width:100%;
     padding:10px 2px 0;
+  }
+}
+
+@media (min-width: 1024px){
+  #carousel-modal .modal-content{
+    max-width:1080px;
+    gap:28px;
+    padding:24px;
+  }
+  #carousel-modal .modal-img{
+    width:50%;
+    max-width:480px;
+  }
+  #carousel-modal .modal-copy{
+    padding:8px 0 0 18px;
+    font-size:1.08rem;
+    line-height:1.72;
   }
 }
 
