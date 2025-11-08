@@ -220,8 +220,8 @@ h2{
 
 /* Modal específica del carrusel: texto negro, layout responsive */
 #carousel-modal .modal-content{
-  background:#fff;
-  color:#0f0f0f; /* texto negro */
+  background:#050000;
+  color:#ffffff; /* texto negro */
   display:flex;
   flex-direction:row; /* desktop: imagen izq, texto der */
   align-items:flex-start;
