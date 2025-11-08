@@ -7,7 +7,7 @@
   <title>Catálogo Mayorista — Raki Productos del Sur de Chile</title>
 
   <!-- Google Tag Manager -->
-  <script>(function(w,d,s,l,i){w[l]=w[l]||[]= [];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-T7MQ65QT');</script>
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-T7MQ65QT');</script>
   <!-- End Google Tag Manager -->
 
   <!-- Google Analytics 4 -->
@@ -32,7 +32,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 </head>
 <body>
   <!-- Google Tag Manager (noscript) -->
@@ -48,7 +47,6 @@
   <main>
     <div class="header-divider" aria-hidden="true"></div>
 
-    <!-- Carrusel -->
     <section class="hero-carousel" aria-label="Galería principal">
       <div class="carousel" data-carousel>
         <div class="carousel-track" data-track>
@@ -65,82 +63,44 @@
             <img src="./assets/slide1.webp" alt="Productos artesanales — vista 4" loading="lazy" />
           </figure>
         </div>
-
-        <!-- 4 indicadores (uno por slide) -->
-        <div class="carousel-indicators" role="tablist" aria-label="Seleccionar slide">
-          <button type="button" class="active" data-slide="0" aria-label="Slide 1"></button>
-          <button type="button" data-slide="1" aria-label="Slide 2"></button>
-          <button type="button" data-slide="2" aria-label="Slide 3"></button>
-          <button type="button" data-slide="3" aria-label="Slide 4"></button>
-        </div>
+        <div class="carousel-indicators" role="tablist" aria-label="Seleccionar slide"></div>
       </div>
     </section>
 
-    <!-- Productos Lácteos -->
     <section class="productos" aria-labelledby="productos-title">
       <h2 id="productos-title">🧀 Productos Lácteos</h2>
-      <div class="grid">
-        <article class="card" onclick="trackEvent('product_click','lacteos','queso_chanco',3800)">
-          <img src="./assets/Queso-Chanco.webp" alt="Queso Chanco" loading="lazy" />
-          <div class="card-content">
-            <h3>Queso Chanco</h3>
-            <p>Textura cremosa, ideal para fundir.</p>
-            <p class="price">Por mayor: $3.800</p>
-          </div>
-        </article>
-        <article class="card" onclick="trackEvent('product_click','lacteos','queso_campo',2700)">
-          <img src="./assets/quesillo.fresco.webp" alt="Quesillo de Campo" loading="lazy" />
-          <div class="card-content">
-            <h3>Queso de Campo</h3>
-            <p>Elaborado con leche entera fresca.</p>
-            <p class="price">Por mayor: $2.700</p>
-          </div>
-        </article>
-      </div>
+      <div class="grid" data-category="lacteos"></div>
     </section>
 
-    <!-- Embutidos y Cárnicos -->
     <section class="carnicos" aria-labelledby="carnicos-title">
       <h2 id="carnicos-title">🥓 Embutidos y Cárnicos</h2>
       <div class="grid" data-category="carnicos"></div>
     </section>
 
-    <!-- Productos Naturales y Gourmet -->
     <section class="gourmet" aria-labelledby="gourmet-title">
       <h2 id="gourmet-title">🍯 Productos Naturales y Gourmet</h2>
       <div class="grid" data-category="gourmet"></div>
     </section>
 
-    <!-- Salsas -->
     <section class="bebidas" aria-labelledby="salsas-title">
       <h2 id="salsas-title">🌶️ Salsas</h2>
-      <div class="grid">
-        <article class="card" onclick="trackEvent('product_click','salsas','pasta_aji',1900)">
-          <img src="./assets/aji.webp" alt="Pasta de ají" loading="lazy" />
-          <div class="card-content">
-            <h3>Pasta de Ají</h3>
-            <p>Conservada artesanalmente, distintos niveles de picante.</p>
-            <p class="price">Por mayor: $1.900</p>
-          </div>
-        </article>
-      </div>
+      <div class="grid" data-category="salsas"></div>
     </section>
   </main>
 
-  <!-- Modal producto -->
   <aside id="product-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
     <div class="modal-overlay"></div>
     <article class="modal-content">
       <button class="modal-close" type="button" aria-label="Cerrar modal">&times;</button>
       <img src="" alt="" class="modal-img" loading="lazy" />
-      <div>
+      <div class="modal-copy">
         <h2 id="modal-title" class="modal-title"></h2>
         <p class="modal-desc"></p>
+        <p class="modal-price"></p>
       </div>
     </article>
   </aside>
 
-  <!-- Modal carrusel: quitar clase oscura -->
   <aside id="carousel-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="carousel-modal-title" aria-hidden="true" inert>
     <div class="modal-overlay"></div>
     <article class="modal-content">
@@ -153,7 +113,6 @@
     </article>
   </aside>
 
-  <!-- Formulario de contacto -->
   <section class="contact-section collapsed" id="contact" aria-labelledby="contact-title" aria-hidden="true" inert>
     <button class="contact-close" id="close-contact" type="button" aria-label="Cerrar formulario">✕</button>
     <h2 id="contact-title">📬 Contáctanos</h2>
@@ -194,7 +153,6 @@
     </form>
   </section>
 
-  <!-- CTA flotante -->
   <a href="#contact" class="fab-btn cta-contact" id="cta-contact" role="button" aria-controls="contact" aria-expanded="false" aria-label="Contactar ahora" onclick="trackEvent('click','cta_button','contactar_cotizar')">
     <span class="pulse" aria-hidden="true"></span>
     <span class="cta-text">Contactar / Cotizar</span>
@@ -203,7 +161,7 @@
 
   <footer>
     <p><strong>Distribuidora Raki Ltda.</strong> — Productos del Sur a tu Negocio</p>
-    <p>📍Pampa Negrón SN, La Unión — 📧 <a href="mailto:raki.distribuidora.sur@gmail.com">raki.distribuidora.sur@gmail.com</a> — 📱 +56 9 84131147</p>
+    <p>📍 Pampa Negrón SN, La Unión — 📧 <a href="mailto:raki.distribuidora.sur@gmail.com">raki.distribuidora.sur@gmail.com</a> — 📱 +56 9 84131147</p>
     <p>Pedidos sobre $250.000 con despacho gratis en Santiago</p>
     <div class="social-links">
       <a href="https://www.facebook.com/profile.php?id=61583199323370" target="_blank" rel="noopener noreferrer" aria-label="Síguenos en Facebook" class="social-icon" onclick="trackEvent('click','social_media','facebook')">

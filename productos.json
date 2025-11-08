@@ -5,6 +5,7 @@
       "titulo": "Queso Chanco",
       "descripcion": "Textura cremosa, ideal para fundir.",
       "precio": "Por mayor: $3.800",
+      "valor": 3800,
       "imagen": "./assets/Queso-Chanco.webp",
       "categoria": "lacteos"
     },
@@ -13,6 +14,7 @@
       "titulo": "Queso de Campo",
       "descripcion": "Elaborado con leche entera fresca.",
       "precio": "Por mayor: $2.700",
+      "valor": 2700,
       "imagen": "./assets/quesillo.fresco.webp",
       "categoria": "lacteos"
     }
@@ -23,6 +25,7 @@
       "titulo": "Longaniza Artesanal",
       "descripcion": "Curada y condimentada, ideal para revender.",
       "precio": "Por mayor: $3.900",
+      "valor": 3900,
       "imagen": "./assets/longa.webp",
       "categoria": "carnicos"
     },
@@ -31,6 +34,7 @@
       "titulo": "Salchichas Artesanales",
       "descripcion": "Variedades: clásica, ahumada y merkén.",
       "precio": "Por mayor: $3.200",
+      "valor": 3200,
       "imagen": "./assets/Salchichas.webp",
       "categoria": "carnicos"
     },
@@ -39,6 +43,7 @@
       "titulo": "Paté Casero",
       "descripcion": "Paté de cerdo y aves, presentación para venta.",
       "precio": "Por mayor: $2.600",
+      "valor": 2600,
       "imagen": "./assets/pate.webp",
       "categoria": "carnicos"
     },
@@ -47,6 +52,7 @@
       "titulo": "Jamón Ahumado",
       "descripcion": "Curación tradicional con ahumado suave.",
       "precio": "Por mayor: $8.500",
+      "valor": 8500,
       "imagen": "./assets/jamon.ahumado.webp",
       "categoria": "carnicos"
     },
@@ -55,6 +61,7 @@
       "titulo": "Carne Ahumada",
       "descripcion": "Trozos ahumados listos para cortar.",
       "precio": "Por mayor: $7.200",
+      "valor": 7200,
       "imagen": "./assets/lomoahumado.webp",
       "categoria": "carnicos"
     }
@@ -65,6 +72,7 @@
       "titulo": "Miel",
       "descripcion": "Miel pura del bosque valdiviano, aroma floral intenso.",
       "precio": "Por mayor: $4.800",
+      "valor": 4800,
       "imagen": "./assets/miel.webp",
       "categoria": "gourmet"
     },
@@ -73,6 +81,7 @@
       "titulo": "Mermeladas Artesanales",
       "descripcion": "Murta, mora y frambuesa, sin preservantes.",
       "precio": "Por mayor: $3.200",
+      "valor": 3200,
       "imagen": "./assets/mermeladas.webp",
       "categoria": "gourmet"
     },
@@ -81,6 +90,7 @@
       "titulo": "Conservas Caseras",
       "descripcion": "Vegetales y pescados en aceite y escabeche.",
       "precio": "Por mayor: $3.500",
+      "valor": 3500,
       "imagen": "./assets/conservas.webp",
       "categoria": "gourmet"
     },
@@ -89,6 +99,7 @@
       "titulo": "Frutos Secos Mix",
       "descripcion": "Maní, nuez y almendra — ideal para comercio.",
       "precio": "Por mayor: $2.900",
+      "valor": 2900,
       "imagen": "./assets/frutossecos.webp",
       "categoria": "gourmet"
     },
@@ -97,6 +108,7 @@
       "titulo": "Aliño Merkén",
       "descripcion": "Pimentón ahumado con merkén — toque picante.",
       "precio": "Por mayor: $1.800",
+      "valor": 1800,
       "imagen": "./assets/merken.webp",
       "categoria": "gourmet"
     },
@@ -105,6 +117,7 @@
       "titulo": "Trozos de Madera Aromatizados",
       "descripcion": "Para ahumar y dar aroma en cocina y parrilla.",
       "precio": "Por mayor: $4.200",
+      "valor": 4200,
       "imagen": "./assets/leñahumo.webp",
       "categoria": "gourmet"
     },
@@ -113,6 +126,7 @@
       "titulo": "Chocolates, Bombones y Trufas",
       "descripcion": "Selección artesanal: tabletas, bombones y trufas.",
       "precio": "Por mayor: $3.600",
+      "valor": 3600,
       "imagen": "./assets/choco.webp",
       "categoria": "gourmet"
     },
@@ -121,6 +135,7 @@
       "titulo": "Alfajores",
       "descripcion": "Rellenos con manjar casero — ideal para revender.",
       "precio": "Por mayor: $2.400",
+      "valor": 2400,
       "imagen": "./assets/alfa.webp",
       "categoria": "gourmet"
     },
@@ -129,6 +144,7 @@
       "titulo": "Manjar",
       "descripcion": "Manjar tradicional, textura cremosa.",
       "precio": "Por mayor: $2.200",
+      "valor": 2200,
       "imagen": "./assets/manjar.webp",
       "categoria": "gourmet"
     }
@@ -139,6 +155,7 @@
       "titulo": "Pasta de Ají",
       "descripcion": "Conservada artesanalmente, distintos niveles de picante.",
       "precio": "Por mayor: $1.900",
+      "valor": 1900,
       "imagen": "./assets/aji.webp",
       "categoria": "salsas"
     }

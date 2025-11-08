@@ -2,161 +2,199 @@
    script.js — Raki catálogo
    =========================== */
 
-// Configuración EmailJS
 const EMAILJS_SERVICE_ID = 'service_ggzbnsk';
 const EMAILJS_TEMPLATE_ID = 'template_7xaxazk';
 
+const productosRenderizados = new Set();
+let productosCache = null;
+let cardObserver = null;
+
 document.addEventListener('DOMContentLoaded', () => {
-  // Animación aparición cards
-  const cards = document.querySelectorAll(".card");
-  if (cards.length > 0) {
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.2 });
-    cards.forEach(card => observer.observe(card));
-  }
+  initCardObserver();
+  initFilters();
+  initBodyTheme();
+  initProductModal();
+  initContactForm();
+  initCarousel();
+  initCarouselModal();
+  loadProductos();
+});
 
-  // Filtros (si existen botones)
-  const filterButtons = document.querySelectorAll(".filter-buttons button[data-category]");
-  if (filterButtons.length > 0) {
-    filterButtons.forEach(btn => {
-      btn.addEventListener("click", () => {
-        filterCategory(btn.getAttribute("data-category"));
-        filterButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
+/* -------- Animaciones de tarjetas -------- */
+function initCardObserver() {
+  cardObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        cardObserver.unobserve(entry.target);
+      }
     });
-  }
+  }, { threshold: 0.2 });
+}
 
-  // Fondo según hora
+function observeCard(card) {
+  cardObserver?.observe(card);
+}
+
+/* -------- Filtros (si existieran) -------- */
+function initFilters() {
+  const filterButtons = document.querySelectorAll('.filter-buttons button[data-category]');
+  if (!filterButtons.length) return;
+
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const category = btn.getAttribute('data-category');
+      filterCategory(category);
+      filterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+}
+
+function filterCategory(category) {
+  document.querySelectorAll('.grid[data-category]').forEach(grid => {
+    const match = category === 'all' || grid.dataset.category === category;
+    grid.parentElement.classList.toggle('hidden', !match);
+  });
+}
+
+/* -------- Fondo según hora -------- */
+function initBodyTheme() {
   const hour = new Date().getHours();
-  if (hour >= 18 || hour < 7) document.body.style.backgroundColor = "#f1e7dc";
+  if (hour >= 18 || hour < 7) {
+    document.body.style.backgroundColor = '#f1e7dc';
+  }
+}
 
-  /* --- Modal producto --- */
+/* -------- Modal de producto -------- */
+function initProductModal() {
   const modal = document.getElementById('product-modal');
+  if (!modal) return;
+
+  const modalImg = modal.querySelector('.modal-img');
+  const modalTitle = modal.querySelector('.modal-title');
+  const modalDesc = modal.querySelector('.modal-desc');
+  const modalPrice = modal.querySelector('.modal-price');
+  const closeBtn = modal.querySelector('.modal-close');
+  const overlay = modal.querySelector('.modal-overlay');
   const whatsappFab = document.getElementById('whatsapp-fab');
 
-  if (modal) {
-    const modalImg = modal.querySelector('.modal-img');
-    const modalTitle = modal.querySelector('.modal-title');
-    const modalDesc = modal.querySelector('.modal-desc');
-    const closeBtn = modal.querySelector('.modal-close');
-    const overlay = modal.querySelector('.modal-overlay');
+  const getDefaultWhatsappHref = () => {
+    const phoneNumber = '56984131147';
+    const text = 'Hola Raki 🌟, quiero información sobre sus productos';
+    return `https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`;
+  };
 
-    function openModal({ img, title, desc, alt }) {
-      if (modalImg) { 
-        modalImg.src = img || ''; 
-        modalImg.alt = alt || title || 'Imagen del producto'; 
-      }
-      if (modalTitle) modalTitle.textContent = title || '';
-      if (modalDesc) modalDesc.textContent = desc || '';
-      modal.classList.add('open');
-      modal.setAttribute('aria-hidden', 'false');
-      document.body.style.overflow = 'hidden';
-      closeBtn?.focus();
+  function openModal({ img, alt, title, desc, price }) {
+    if (modalImg) {
+      modalImg.src = img || '';
+      modalImg.alt = alt || title || 'Imagen del producto';
+    }
+    if (modalTitle) modalTitle.textContent = title || '';
+    if (modalDesc) modalDesc.textContent = desc || '';
+    if (modalPrice) modalPrice.textContent = price || '';
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    closeBtn?.focus();
 
-      // Actualizar WhatsApp con el producto seleccionado
-      if (whatsappFab && title) {
-        const phoneNumber = '56984131147';
-        const text = `Hola Raki 🌟, quiero información sobre: ${title}`;
-        whatsappFab.href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`;
-      }
-      
-      // Analytics
-      if (typeof gtag !== 'undefined') {
-        gtag('event', 'view_item', {
-          event_category: 'engagement',
-          event_label: title
-        });
-      }
+    if (whatsappFab && title) {
+      const phoneNumber = '56984131147';
+      const text = `Hola Raki 🌟, quiero información sobre: ${title}`;
+      whatsappFab.href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(text)}`;
     }
 
-    function closeModal() {
-      modal.classList.remove('open');
-      modal.setAttribute('aria-hidden', 'true');
-      if (modalImg) modalImg.src = '';
-      document.body.style.overflow = '';
-      
-      // Restaurar WhatsApp a mensaje por defecto
-      if (whatsappFab) {
-        const phoneNumber = '56984131147';
-        const defaultText = 'Hola Raki 🌟, quiero información sobre sus productos';
-        whatsappFab.href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultText)}`;
-      }
-    }
-
-    // Agregar eventos a las cards existentes
-    const cardEls = document.querySelectorAll('.card');
-    if (cardEls.length > 0) {
-      cardEls.forEach(card => {
-        card.style.cursor = 'pointer';
-        if (!card.hasAttribute('tabindex')) card.setAttribute('tabindex', '0');
-        
-        card.addEventListener('click', () => {
-          const imgEl = card.querySelector('img');
-          const titleEl = card.querySelector('.card-content h3');
-          const descEl = card.querySelector('.card-content p:not(.price)');
-          
-          openModal({
-            img: imgEl ? imgEl.src : '',
-            alt: imgEl ? (imgEl.alt || '') : '',
-            title: titleEl ? titleEl.textContent.trim() : '',
-            desc: descEl ? descEl.textContent.trim() : ''
-          });
-        });
-        
-        card.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') { 
-            e.preventDefault(); 
-            card.click(); 
-          }
-        });
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'view_item', {
+        event_category: 'engagement',
+        event_label: title
       });
     }
+  }
 
-    overlay?.addEventListener('click', closeModal);
-    closeBtn?.addEventListener('click', closeModal);
-    document.addEventListener('keydown', (e) => { 
-      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); 
+  function closeModal() {
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    if (modalImg) modalImg.src = '';
+    document.body.style.overflow = '';
+
+    if (whatsappFab) {
+      whatsappFab.href = getDefaultWhatsappHref();
+    }
+  }
+
+  function handleCard(card) {
+    card.style.cursor = 'pointer';
+    if (!card.hasAttribute('tabindex')) card.setAttribute('tabindex', '0');
+
+    card.addEventListener('click', () => {
+      const imgEl = card.querySelector('img');
+      const titleEl = card.querySelector('.card-content h3');
+      const descEl = card.querySelector('.card-content p:not(.price)');
+      const priceEl = card.querySelector('.price');
+
+      openModal({
+        img: imgEl?.src ?? '',
+        alt: imgEl?.alt ?? '',
+        title: titleEl?.textContent.trim() ?? '',
+        desc: descEl?.textContent.trim() ?? '',
+        price: priceEl?.textContent.trim() ?? ''
+      });
+    });
+
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.click();
+      }
     });
   }
 
-  /* ============================================
-     FORMULARIO DE CONTACTO
-     ============================================ */
+  modal.dataset.cardHandler = 'true';
+
+  modal.addEventListener('raki:wire-cards', () => {
+    const cards = document.querySelectorAll('.grid .card:not([data-wired="true"])');
+    cards.forEach(card => {
+      handleCard(card);
+      card.dataset.wired = 'true';
+    });
+  });
+
+  overlay?.addEventListener('click', closeModal);
+  closeBtn?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) {
+      closeModal();
+    }
+  });
+}
+
+/* -------- Formulario de contacto -------- */
+function initContactForm() {
   const contactSection = document.getElementById('contact');
   const cta = document.getElementById('cta-contact');
   const closeContact = document.getElementById('close-contact');
   const contactForm = document.getElementById('contact-form');
   const feedback = document.getElementById('contact-feedback');
+  const clearBtn = document.getElementById('clear-contact');
 
-  // Abrir/cerrar formulario
   function setContactOpen(open) {
     if (!contactSection) return;
-    
+
     if (open) {
       contactSection.classList.remove('collapsed');
       contactSection.setAttribute('aria-hidden', 'false');
       contactSection.removeAttribute('inert');
       cta?.setAttribute('aria-expanded', 'true');
-      
-      // Scroll suave al formulario
+
       setTimeout(() => {
         contactSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 100);
-      
-      // Focus en el primer campo
+
       setTimeout(() => {
-        const firstInput = contactForm?.querySelector('input[name="name"]');
-        firstInput?.focus();
+        contactForm?.querySelector('input[name="name"]')?.focus();
       }, 400);
-      
-      // Analytics
+
       if (typeof gtag !== 'undefined') {
         gtag('event', 'contact_form_open', {
           event_category: 'engagement',
@@ -172,353 +210,289 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Evento CTA flotante
-  if (cta) {
-    cta.addEventListener('click', (e) => {
-      e.preventDefault();
-      const isOpen = contactSection && !contactSection.classList.contains('collapsed');
-      setContactOpen(!isOpen);
-    });
-  }
+  cta?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const isOpen = contactSection && !contactSection.classList.contains('collapsed');
+    setContactOpen(!isOpen);
+  });
 
-  // Botón cerrar formulario
-  if (closeContact) {
-    closeContact.addEventListener('click', () => {
-      setContactOpen(false);
-    });
-  }
+  closeContact?.addEventListener('click', () => setContactOpen(false));
 
-  // Cerrar con ESC
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && contactSection && !contactSection.classList.contains('collapsed')) {
       setContactOpen(false);
     }
   });
 
-  // Botón limpiar
-  const clearBtn = document.getElementById('clear-contact');
-  if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
-      contactForm?.reset();
-      if (feedback) feedback.textContent = '';
-    });
-  }
+  clearBtn?.addEventListener('click', () => {
+    contactForm?.reset();
+    if (feedback) feedback.textContent = '';
+  });
 
-  // ENVÍO DEL FORMULARIO - CORREGIDO
-  if (contactForm) {
-    contactForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const submitBtn = contactForm.querySelector('button[type="submit"]');
-      const fd = new FormData(contactForm);
-      
-      // Obtener datos del formulario
-      const from_name = fd.get('name')?.toString().trim() || '';
-      const reply_to = fd.get('email')?.toString().trim() || '';
-      const phone = fd.get('phone')?.toString().trim() || '';
-      const category = fd.get('category')?.toString().trim() || '';
-      const message = fd.get('message')?.toString().trim() || '';
+  contactForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-      // Validación básica
-      if (!from_name || !reply_to || !message) {
-        if (feedback) {
-          feedback.textContent = '⚠️ Por favor completa todos los campos requeridos (*)';
-          feedback.style.color = '#c74242';
-        }
-        return;
-      }
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+    const fd = new FormData(contactForm);
 
-      // Deshabilitar botón y mostrar estado
-      submitBtn?.setAttribute('disabled', 'true');
-      submitBtn?.classList.add('sending');
-      
+    const from_name = fd.get('name')?.toString().trim() ?? '';
+    const reply_to = fd.get('email')?.toString().trim() ?? '';
+    const phone = fd.get('phone')?.toString().trim() ?? '';
+    const category = fd.get('category')?.toString().trim() ?? '';
+    const message = fd.get('message')?.toString().trim() ?? '';
+
+    if (!from_name || !reply_to || !message) {
       if (feedback) {
-        feedback.textContent = '⏳ Enviando mensaje...';
-        feedback.style.color = '#666';
+        feedback.textContent = '⚠️ Por favor completa todos los campos requeridos (*)';
+        feedback.style.color = '#c74242';
       }
-
-      // Preparar datos para EmailJS
-      const templateParams = {
-        from_name: from_name,
-        reply_to: reply_to,
-        phone: phone || 'No proporcionado',
-        category: category || 'Sin categoría',
-        message: message
-      };
-
-      try {
-        // Verificar que EmailJS esté cargado
-        if (!window.emailjs || typeof window.emailjs.send !== 'function') {
-          throw new Error('EmailJS no está disponible');
-        }
-
-        // Enviar con EmailJS
-        await window.emailjs.send(
-          EMAILJS_SERVICE_ID,
-          EMAILJS_TEMPLATE_ID,
-          templateParams
-        );
-
-        // Éxito
-        if (feedback) {
-          feedback.textContent = '✅ ¡Mensaje enviado correctamente! Te contactaremos pronto.';
-          feedback.style.color = '#2c6f4b';
-        }
-
-        // Analytics
-        if (typeof gtag !== 'undefined') {
-          gtag('event', 'form_submit', {
-            event_category: 'conversion',
-            event_label: 'Contact Form Success'
-          });
-        }
-
-        // Limpiar formulario
-        contactForm.reset();
-
-        // Cerrar formulario después de 2 segundos
-        setTimeout(() => {
-          setContactOpen(false);
-          if (feedback) feedback.textContent = '';
-        }, 2000);
-
-      } catch (error) {
-        console.error('Error al enviar formulario:', error);
-
-        // Fallback: abrir cliente de correo
-        const subject = encodeURIComponent(`Contacto web: ${from_name}`);
-        const body = encodeURIComponent(
-          `Nombre/Empresa: ${from_name}\n` +
-          `Email: ${reply_to}\n` +
-          `Teléfono: ${phone}\n` +
-          `Categoría: ${category}\n\n` +
-          `Mensaje:\n${message}`
-        );
-
-        if (feedback) {
-          feedback.textContent = '⚠️ Error al enviar. Abriendo tu cliente de correo...';
-          feedback.style.color = '#ff7a59';
-        }
-
-        // Abrir mailto después de 1 segundo
-        setTimeout(() => {
-          window.location.href = `mailto:raki.distribuidora.sur@gmail.com?subject=${subject}&body=${body}`;
-        }, 1000);
-
-      } finally {
-        // Rehabilitar botón
-        submitBtn?.removeAttribute('disabled');
-        submitBtn?.classList.remove('sending');
-      }
-    });
-  }
-
-  /* ============================================
-     CARRUSEL
-     ============================================ */
-  const carouselEl = document.querySelector('[data-carousel]');
-  if (carouselEl) {
-    const track = carouselEl.querySelector('[data-track]');
-    if (!track) return;
-    
-    let slides = Array.from(track.children).filter(n => n.nodeType === 1);
-    const prevBtn = carouselEl.querySelector('.carousel-btn.prev');
-    const nextBtn = carouselEl.querySelector('.carousel-btn.next');
-    const indicatorsWrap = carouselEl.querySelector('.carousel-indicators');
-    const total = slides.length;
-    
-    if (total === 0) return;
-
-    // Crear indicadores si no existen
-    let indicators = [];
-    if (indicatorsWrap) {
-      indicatorsWrap.innerHTML = '';
-      slides.forEach((_, i) => {
-        const btn = document.createElement('button');
-        btn.dataset.slide = String(i);
-        btn.setAttribute('role', 'tab');
-        btn.setAttribute('aria-label', `Ir a imagen ${i + 1}`);
-        indicatorsWrap.appendChild(btn);
-      });
-      indicators = Array.from(indicatorsWrap.querySelectorAll('button'));
+      return;
     }
 
-    let current = 0;
-    let autoplay = null;
-    let startX = 0;
-    let deltaX = 0;
+    submitBtn?.setAttribute('disabled', 'true');
+    submitBtn?.classList.add('sending');
+    if (feedback) {
+      feedback.textContent = '⏳ Enviando mensaje...';
+      feedback.style.color = '#666';
+    }
 
-    function goTo(index) {
-      current = ((index % total) + total) % total;
-      const offset = -current * 100;
-      track.style.transform = `translateX(${offset}%)`;
-      
-      indicators.forEach((btn, i) => {
-        btn.classList.toggle('active', i === current);
-        btn.setAttribute('aria-selected', i === current ? 'true' : 'false');
-      });
-      
-      // Analytics
+    const templateParams = {
+      from_name,
+      reply_to,
+      phone: phone || 'No proporcionado',
+      category: category || 'Sin categoría',
+      message
+    };
+
+    try {
+      if (!window.emailjs || typeof window.emailjs.send !== 'function') {
+        throw new Error('EmailJS no está disponible');
+      }
+
+      await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+
+      if (feedback) {
+        feedback.textContent = '✅ ¡Mensaje enviado correctamente! Te contactaremos pronto.';
+        feedback.style.color = '#2c6f4b';
+      }
+
       if (typeof gtag !== 'undefined') {
-        gtag('event', 'carousel_navigate', {
-          event_category: 'engagement',
-          event_label: `Slide ${current + 1}`
+        gtag('event', 'form_submit', {
+          event_category: 'conversion',
+          event_label: 'Contact Form Success'
         });
       }
-    }
 
-    // Navegación
-    prevBtn?.addEventListener('click', () => { goTo(current - 1); restartAuto(); });
-    nextBtn?.addEventListener('click', () => { goTo(current + 1); restartAuto(); });
-    indicators.forEach(btn => {
-      btn.addEventListener('click', () => { 
-        goTo(Number(btn.dataset.slide)); 
-        restartAuto(); 
+      contactForm.reset();
+
+      setTimeout(() => {
+        setContactOpen(false);
+        if (feedback) feedback.textContent = '';
+      }, 2000);
+    } catch (error) {
+      console.error('Error al enviar formulario:', error);
+
+      const subject = encodeURIComponent(`Contacto web: ${from_name}`);
+      const body = encodeURIComponent(
+        `Nombre/Empresa: ${from_name}\nEmail: ${reply_to}\nTeléfono: ${phone}\nCategoría: ${category}\n\nMensaje:\n${message}`
+      );
+
+      if (feedback) {
+        feedback.textContent = '⚠️ Error al enviar. Abriendo tu cliente de correo...';
+        feedback.style.color = '#ff7a59';
+      }
+
+      setTimeout(() => {
+        window.location.href = `mailto:raki.distribuidora.sur@gmail.com?subject=${subject}&body=${body}`;
+      }, 1000);
+    } finally {
+      submitBtn?.removeAttribute('disabled');
+      submitBtn?.classList.remove('sending');
+    }
+  });
+}
+
+/* -------- Carrusel -------- */
+function initCarousel() {
+  const carouselEl = document.querySelector('[data-carousel]');
+  if (!carouselEl) return;
+
+  const track = carouselEl.querySelector('[data-track]');
+  if (!track) return;
+
+  const slides = Array.from(track.children).filter(n => n.nodeType === 1);
+  const indicatorsWrap = carouselEl.querySelector('.carousel-indicators');
+  const total = slides.length;
+  if (!total) return;
+
+  if (indicatorsWrap) {
+    indicatorsWrap.innerHTML = '';
+    slides.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.dataset.slide = String(i);
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('aria-label', `Ir a imagen ${i + 1}`);
+      indicatorsWrap.appendChild(btn);
+    });
+  }
+
+  const indicators = Array.from(indicatorsWrap?.querySelectorAll('button') ?? []);
+  let current = 0;
+  let autoplay = null;
+  let startX = 0;
+  let deltaX = 0;
+
+  function goTo(index) {
+    current = ((index % total) + total) % total;
+    track.style.transform = `translateX(${-current * 100}%)`;
+
+    indicators.forEach((btn, i) => {
+      btn.classList.toggle('active', i === current);
+      btn.setAttribute('aria-selected', i === current ? 'true' : 'false');
+    });
+
+    if (typeof gtag !== 'undefined') {
+      gtag('event', 'carousel_navigate', {
+        event_category: 'engagement',
+        event_label: `Slide ${current + 1}`
       });
-    });
-
-    // Autoplay
-    function startAuto() { 
-      stopAuto(); 
-      autoplay = setInterval(() => goTo(current + 1), 5000); 
     }
-    
-    function stopAuto() { 
-      if (autoplay) {
-        clearInterval(autoplay);
-        autoplay = null;
-      }
+  }
+
+  function startAuto() {
+    stopAuto();
+    autoplay = setInterval(() => goTo(current + 1), 5000);
+  }
+
+  function stopAuto() {
+    if (autoplay) {
+      clearInterval(autoplay);
+      autoplay = null;
     }
+  }
 
-    // Gestos táctiles
-    track.addEventListener('touchstart', (e) => {
-      startX = e.touches[0].clientX;
-      stopAuto();
-    });
-
-    track.addEventListener('touchmove', (e) => {
-      deltaX = e.touches[0].clientX - startX;
-      track.style.transform = `translateX(${-current * 100 + (deltaX / window.innerWidth) * 100}%)`;
-    });
-
-    track.addEventListener('touchend', (e) => {
-      if (Math.abs(deltaX) > 50) {
-        if (deltaX < 0) goTo(current + 1); // Izquierda
-        else goTo(current - 1); // Derecha
-      } else {
-        goTo(current); // Retornar a la posición actual
-      }
+  indicators.forEach(btn => {
+    btn.addEventListener('click', () => {
+      goTo(Number(btn.dataset.slide));
       startAuto();
     });
+  });
 
-    // Inicializar
-    goTo(0);
+  track.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    deltaX = 0;
+    stopAuto();
+  });
+
+  track.addEventListener('touchmove', (e) => {
+    deltaX = e.touches[0].clientX - startX;
+    track.style.transform = `translateX(${-current * 100 + (deltaX / window.innerWidth) * 100}%)`;
+  });
+
+  track.addEventListener('touchend', () => {
+    if (Math.abs(deltaX) > 50) {
+      goTo(current + (deltaX < 0 ? 1 : -1));
+    } else {
+      goTo(current);
+    }
     startAuto();
-  }
+  });
 
+  goTo(0);
+  startAuto();
+}
+
+/* -------- Modal del carrusel -------- */
+function initCarouselModal() {
   const carouselSlides = document.querySelectorAll('.carousel-slide img');
   const carouselModal = document.getElementById('carousel-modal');
+  if (!carouselSlides.length || !carouselModal) return;
 
-  if (carouselSlides.length && carouselModal) {
-    const carouselClose = carouselModal.querySelector('.modal-close');
-    const carouselOverlay = carouselModal.querySelector('.modal-overlay');
-    let lastFocusedElement = null;
+  const carouselClose = carouselModal.querySelector('.modal-close');
+  const carouselOverlay = carouselModal.querySelector('.modal-overlay');
+  let lastFocusedElement = null;
 
-    const openCarouselModal = () => {
-      lastFocusedElement = document.activeElement;
-      carouselModal.classList.add('open');
-      carouselModal.removeAttribute('aria-hidden');
-      carouselModal.removeAttribute('inert');
-      document.body.style.overflow = 'hidden';
-      carouselClose.focus();
+  function openCarouselModal() {
+    lastFocusedElement = document.activeElement;
+    carouselModal.classList.add('open');
+    carouselModal.removeAttribute('aria-hidden');
+    carouselModal.removeAttribute('inert');
+    document.body.style.overflow = 'hidden';
+    carouselClose?.focus();
 
-      if (typeof trackEvent === 'function') {
-        trackEvent('modal_open', 'carousel', 'sab_humo');
-      }
-    };
-
-    const closeCarouselModal = () => {
-      carouselModal.classList.remove('open');
-      carouselModal.setAttribute('aria-hidden', 'true');
-      carouselModal.setAttribute('inert', '');
-      document.body.style.overflow = '';
-      if (lastFocusedElement) {
-        lastFocusedElement.focus();
-      }
-    };
-
-    carouselSlides.forEach((img) => {
-      img.addEventListener('click', openCarouselModal);
-    });
-
-    carouselClose.addEventListener('click', closeCarouselModal);
-    carouselOverlay.addEventListener('click', closeCarouselModal);
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && carouselModal.classList.contains('open')) {
-        closeCarouselModal();
-      }
-    });
+    if (typeof trackEvent === 'function') {
+      trackEvent('modal_open', 'carousel', 'sab_humo');
+    }
   }
 
-  // Cargar productos desde JSON (con caché simple)
-  let productosCargados = false;
-  if (!productosCargados) {
-    fetch('./productos.json')
-      .then(response => response.json())
-      .then(data => {
-        Object.entries(data).forEach(([categoria, items]) => renderProductos(categoria, items));
-      })
-      .catch(error => console.error('Error cargando productos:', error));
+  function closeCarouselModal() {
+    carouselModal.classList.remove('open');
+    carouselModal.setAttribute('aria-hidden', 'true');
+    carouselModal.setAttribute('inert', '');
+    document.body.style.overflow = '';
+    lastFocusedElement?.focus();
   }
-  
-  // Lazy load de productos por sección
-  const observerSecciones = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !entry.target.dataset.loaded) {
-        entry.target.dataset.loaded = true;
-        const categoria = entry.target.className.split(' ')[0]; // Asume que la clase es 'productos', 'carnicos', etc.
-        fetch('./productos.json')
-          .then(response => response.json())
-          .then(data => {
-            if (data[categoria]) {
-              const grid = entry.target.querySelector('.grid');
-              data[categoria].forEach(producto => {
-                const card = document.createElement('article');
-                card.className = 'card';
-                card.onclick = () => trackEvent('product_click', categoria, producto.id, parseInt(producto.precio.replace(/\D/g, '')));
-                card.innerHTML = `
-                  <img src="${producto.imagen}" alt="${producto.titulo}" loading="lazy" />
-                  <div class="card-content">
-                    <h3>${producto.titulo}</h3>
-                    <p>${producto.descripcion}</p>
-                    <p class="price">${producto.precio}</p>
-                  </div>
-                `;
-                grid.appendChild(card);
-              });
-            }
-          });
-      }
-    });
-  }, { threshold: 0.1 });
 
-  // Observar secciones
-  document.querySelectorAll('section.productos, section.carnicos, section.gourmet, section.bebidas').forEach(section => {
-    observerSecciones.observe(section);
+  carouselSlides.forEach((img) => {
+    img.addEventListener('click', openCarouselModal);
   });
-  
-  // Agregar al script.js eventos adicionales para productos, carrusel, etc.
-});
 
-const renderProductos = (categoria, productos) => {
+  carouselClose?.addEventListener('click', closeCarouselModal);
+  carouselOverlay?.addEventListener('click', closeCarouselModal);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && carouselModal.classList.contains('open')) {
+      closeCarouselModal();
+    }
+  });
+}
+
+/* -------- Productos -------- */
+async function loadProductos() {
+  if (productosCache) {
+    renderAllProducts(productosCache);
+    return;
+  }
+
+  try {
+    const response = await fetch('./productos.json', { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    productosCache = data;
+    renderAllProducts(data);
+  } catch (error) {
+    console.error('Error cargando productos:', error);
+  }
+}
+
+function renderAllProducts(data) {
+  Object.entries(data).forEach(([categoria, items]) => {
+    renderProductos(categoria, items);
+  });
+
+  document.getElementById('product-modal')?.dispatchEvent(new Event('raki:wire-cards'));
+}
+
+function dedupeById(items = []) {
+  const vistos = new Set();
+  return items.filter(item => {
+    if (!item || !item.id || vistos.has(item.id)) return false;
+    vistos.add(item.id);
+    return true;
+  });
+}
+
+function renderProductos(categoria, productos = []) {
   const grid = document.querySelector(`.grid[data-category="${categoria}"]`);
-  if (!grid) return;
+  if (!grid || productosRenderizados.has(categoria)) return;
+
   grid.innerHTML = '';
-  productos.forEach(producto => {
+  dedupeById(productos).forEach(producto => {
     const card = document.createElement('article');
     card.className = 'card';
-    card.onclick = () => trackEvent('product_click', categoria, producto.id, producto.valor || 0);
+    card.dataset.productId = producto.id;
+    card.dataset.category = categoria;
+
     card.innerHTML = `
       <img src="${producto.imagen}" alt="${producto.titulo}" loading="lazy" />
       <div class="card-content">
@@ -527,6 +501,15 @@ const renderProductos = (categoria, productos) => {
         <p class="price">${producto.precio}</p>
       </div>
     `;
+
+    card.addEventListener('click', () => {
+      trackEvent?.('product_click', categoria, producto.id, producto.valor || 0);
+    });
+
     grid.appendChild(card);
+    observeCard(card);
   });
-};
+
+  productosRenderizados.add(categoria);
+  grid.closest('section')?.classList.remove('hidden');
+}
