@@ -55,17 +55,11 @@ header{
   background-repeat:no-repeat;
   min-height:280px;
 }
-.site-logo{
-  height:100px;
-  width:auto;
-  margin:0 auto 8px;
-  display:block;
-}
 
 @media (min-width:1024px){
   header{
-    padding:80px 1.5rem 40px;
-    min-height:420px;
+    padding:90px 1.5rem 45px;
+    min-height:460px;
   }
 }
 
@@ -455,5 +449,24 @@ footer a{ color:#fff; }
   }
   .about-media img{
     max-height:260px;
+  }
+}
+
+.site-logo{
+  height:120px;
+  width:auto;
+  margin:0 auto 8px;
+  display:block;
+}
+
+@media (min-width:1024px){
+  .site-logo{
+    height:150px;
+  }
+  header h1{
+    font-size:2.5rem;
+  }
+  header p{
+    font-size:1.2rem;
   }
 }
