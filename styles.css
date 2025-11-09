@@ -63,8 +63,9 @@ header{
 }
 
 @media (min-width:1024px){
-  .site-logo{
-    height:140px;
+  header{
+    padding:80px 1.5rem 40px;
+    min-height:420px;
   }
 }
 
