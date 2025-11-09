@@ -199,9 +199,9 @@
 
   <!-- EmailJS -->
   <script type="module">
-    import * as emailjs from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-    window.emailjs = emailjs;
-    emailjs.init('j8hr_UiaE5pRfCtV4');
+  import { init, send } from 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+  window.emailjs = { init, send };
+  init('j8hr_UiaE5pRfCtV4');
   </script>
 
   <script src="script.js" defer></script>
