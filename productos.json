@@ -114,11 +114,11 @@
     },
     {
       "id": "madera_aromatizada",
-      "titulo": "Trozos de Madera Aromatizados",
+      "titulo": "Trozos de Madera Aromatizados SAB-HUMO",
       "descripcion": "Para ahumar y dar aroma en cocina y parrilla.",
       "precio": "Por mayor: $4.200",
       "valor": 4200,
-      "imagen": "./assets/leñahumo.webp",
+      "imagen": "./assets/slider3.webp",
       "categoria": "gourmet"
     },
     {
