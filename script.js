@@ -342,7 +342,7 @@ function initCarousel() {
   let startX = 0;
   let deltaX = 0;
 
-  function goTo(index) {
+  function goTo(index, userInitiated = false) {
     current = ((index % total) + total) % total;
     track.style.transform = `translateX(${-current * 100}%)`;
 
@@ -351,7 +351,7 @@ function initCarousel() {
       btn.setAttribute('aria-selected', i === current ? 'true' : 'false');
     });
 
-    if (typeof gtag !== 'undefined') {
+    if (userInitiated && typeof gtag !== 'undefined') {
       gtag('event', 'carousel_navigate', {
         event_category: 'engagement',
         event_label: `Slide ${current + 1}`
@@ -373,8 +373,8 @@ function initCarousel() {
 
   indicators.forEach(btn => {
     btn.addEventListener('click', () => {
-      goTo(Number(btn.dataset.slide));
-      startAuto();
+      goTo(Number(btn.dataset.slide), true);
+      if (!reduceMotion.matches) startAuto();
     });
   });
 
@@ -391,15 +391,24 @@ function initCarousel() {
 
   track.addEventListener('touchend', () => {
     if (Math.abs(deltaX) > 50) {
-      goTo(current + (deltaX < 0 ? 1 : -1));
+      goTo(current + (deltaX < 0 ? 1 : -1), true);
     } else {
       goTo(current);
     }
-    startAuto();
+    if (!reduceMotion.matches) startAuto();
   });
 
   goTo(0);
-  startAuto();
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!reduceMotion.matches && total > 1) startAuto();
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopAuto();
+    else if (!reduceMotion.matches && total > 1) startAuto();
+  });
+  reduceMotion.addEventListener?.('change', () => {
+    if (reduceMotion.matches) stopAuto();
+    else if (!document.hidden && total > 1) startAuto();
+  });
 }
 
 /* -------- Modal del carrusel -------- */
@@ -455,7 +464,7 @@ async function loadProductos() {
   }
 
   try {
-    const response = await fetch('./productos.json', { cache: 'no-cache' });
+    const response = await fetch('./productos.json', { cache: 'default' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const data = await response.json();
     productosCache = data;
