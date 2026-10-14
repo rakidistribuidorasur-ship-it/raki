@@ -314,101 +314,96 @@ function initContactForm() {
 
 /* -------- Carrusel -------- */
 function initCarousel() {
-  const carouselEl = document.querySelector('[data-carousel]');
-  if (!carouselEl) return;
-
-  const track = carouselEl.querySelector('[data-track]');
+  const carousel = document.querySelector('[data-carousel]');
+  const track = carousel?.querySelector('[data-track]');
   if (!track) return;
 
-  const slides = Array.from(track.children).filter(n => n.nodeType === 1);
-  const indicatorsWrap = carouselEl.querySelector('.carousel-indicators');
-  const total = slides.length;
-  if (!total) return;
+  const slides = [...track.querySelectorAll('.carousel-slide')];
+  const indicatorsWrap = carousel.querySelector('.carousel-indicators');
+  if (slides.length < 2) return;
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let current = 0;
+  let timer = null;
+  let touchStart = null;
 
   if (indicatorsWrap) {
-    indicatorsWrap.innerHTML = '';
-    slides.forEach((_, i) => {
-      const btn = document.createElement('button');
-      btn.dataset.slide = String(i);
-      btn.setAttribute('role', 'tab');
-      btn.setAttribute('aria-label', `Ir a imagen ${i + 1}`);
-      indicatorsWrap.appendChild(btn);
+    indicatorsWrap.replaceChildren();
+    slides.forEach((_, index) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.dataset.slide = String(index);
+      button.setAttribute('aria-label', `Mostrar imagen ${index + 1} de ${slides.length}`);
+      indicatorsWrap.appendChild(button);
     });
   }
 
-  const indicators = Array.from(indicatorsWrap?.querySelectorAll('button') ?? []);
-  let current = 0;
-  let autoplay = null;
-  let startX = 0;
-  let deltaX = 0;
-
-  function goTo(index, userInitiated = false) {
-    current = ((index % total) + total) % total;
-    track.style.transform = `translateX(${-current * 100}%)`;
-
-    indicators.forEach((btn, i) => {
-      btn.classList.toggle('active', i === current);
-      btn.setAttribute('aria-selected', i === current ? 'true' : 'false');
+  const indicators = [...(indicatorsWrap?.querySelectorAll('button') ?? [])];
+  function show(index, manual = false) {
+    current = (index + slides.length) % slides.length;
+    track.style.transform = `translate3d(-${current * 100}%, 0, 0)`;
+    indicators.forEach((button, i) => {
+      button.classList.toggle('active', i === current);
+      button.setAttribute('aria-current', i === current ? 'true' : 'false');
     });
-
-    if (userInitiated && typeof gtag !== 'undefined') {
-      gtag('event', 'carousel_navigate', {
-        event_category: 'engagement',
-        event_label: `Slide ${current + 1}`
-      });
+    if (manual && typeof gtag === 'function') {
+      gtag('event', 'carousel_navigate', {event_category:'engagement', event_label:`Slide ${current + 1}`});
     }
   }
-
-  function startAuto() {
-    stopAuto();
-    autoplay = setInterval(() => goTo(current + 1), 5000);
+  function stop() {
+    if (timer !== null) clearInterval(timer);
+    timer = null;
   }
-
-  function stopAuto() {
-    if (autoplay) {
-      clearInterval(autoplay);
-      autoplay = null;
+  function play() {
+    stop();
+    if (!document.hidden && !reducedMotion.matches) {
+      timer = setInterval(() => show(current + 1), 5000);
     }
   }
+  function navigate(step) {
+    show(current + step, true);
+    play();
+  }
 
-  indicators.forEach(btn => {
-    btn.addEventListener('click', () => {
-      goTo(Number(btn.dataset.slide), true);
-      if (!reduceMotion.matches) startAuto();
-    });
-  });
-
-  track.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-    deltaX = 0;
-    stopAuto();
+  indicators.forEach((button, index) => {
+    button.addEventListener('click', () => {show(index, true); play();});
   });
 
-  track.addEventListener('touchmove', (e) => {
-    deltaX = e.touches[0].clientX - startX;
-    track.style.transform = `translateX(${-current * 100 + (deltaX / window.innerWidth) * 100}%)`;
-  });
+  const controls = document.createElement('div');
+  controls.className = 'carousel-navigation';
+  for (const [direction, symbol, label] of [[-1, '‹', 'Imagen anterior'], [1, '›', 'Imagen siguiente']]) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.textContent = symbol;
+    button.setAttribute('aria-label', label);
+    button.addEventListener('click', () => navigate(direction));
+    controls.appendChild(button);
+  }
+  carousel.appendChild(controls);
 
-  track.addEventListener('touchend', () => {
-    if (Math.abs(deltaX) > 50) {
-      goTo(current + (deltaX < 0 ? 1 : -1), true);
-    } else {
-      goTo(current);
-    }
-    if (!reduceMotion.matches) startAuto();
-  });
+  track.addEventListener('touchstart', event => {
+    touchStart = event.changedTouches[0]?.clientX ?? null;
+    stop();
+  }, {passive:true});
+  track.addEventListener('touchend', event => {
+    if (touchStart === null) return;
+    const delta = (event.changedTouches[0]?.clientX ?? touchStart) - touchStart;
+    touchStart = null;
+    if (Math.abs(delta) > 45) show(current + (delta < 0 ? 1 : -1), true);
+    play();
+  }, {passive:true});
 
-  goTo(0);
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  if (!reduceMotion.matches && total > 1) startAuto();
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stopAuto();
-    else if (!reduceMotion.matches && total > 1) startAuto();
+  carousel.addEventListener('mouseenter', stop);
+  carousel.addEventListener('mouseleave', play);
+  carousel.addEventListener('focusin', stop);
+  carousel.addEventListener('focusout', event => {
+    if (!carousel.contains(event.relatedTarget)) play();
   });
-  reduceMotion.addEventListener?.('change', () => {
-    if (reduceMotion.matches) stopAuto();
-    else if (!document.hidden && total > 1) startAuto();
-  });
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : play());
+  reducedMotion.addEventListener?.('change', play);
+
+  show(0);
+  play();
 }
 
 /* -------- Modal del carrusel -------- */
