@@ -517,3 +517,31 @@ h2 > svg.category-icon{
   overflow:visible;
 }
 @media(max-width:480px){h2 > svg.category-icon{width:20px !important;height:20px !important;min-width:20px;max-width:20px;min-height:20px;max-height:20px;flex-basis:20px}}
+
+/* CTA flotante compacto y sobrio */
+a.cta-contact{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  width:auto;
+  height:42px;
+  min-width:0;
+  padding:0 14px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border:1px solid rgba(44,111,75,.25);
+  border-radius:999px;
+  background:#fff;
+  color:var(--brand);
+  font:600 14px/1 "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif;
+  box-shadow:0 2px 12px rgba(0,0,0,.12);
+  text-decoration:none;
+  transform:none;
+  z-index:50;
+}
+a.cta-contact:hover,a.cta-contact:focus-visible{background:#eff7f1;color:#1d5638;box-shadow:0 4px 14px rgba(0,0,0,.15);transform:none;text-decoration:none}
+a.cta-contact .cta-icon{display:block;width:17px;height:17px;min-width:17px;max-width:17px;flex:0 0 17px}
+a.cta-contact .cta-label{display:inline;white-space:nowrap}
+@media(max-width:480px){a.cta-contact{right:12px;bottom:12px;width:auto;height:42px;padding:0 12px;border-radius:999px}}
