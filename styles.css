@@ -493,5 +493,5 @@ header h1,header p{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.55)}
 
 /* Portada y carrusel unidos, sin separación decorativa */
 header + main{margin-top:0;padding-top:0}
-main > .hero-carousel{margin-top:0;padding-top:0}
+main > .hero-carousel{margin-top:8px;padding-top:0}
 main > .hero-carousel .carousel{margin-top:0}
