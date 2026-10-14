@@ -498,3 +498,7 @@ main > .hero-carousel .carousel{margin-top:0}
 
 /* Tipografía uniforme en controles nativos y elementos interactivos */
 button,input,select,textarea{font-family:inherit}
+
+/* Iconografía minimalista de categorías */
+h2 .category-icon{display:inline-block;flex:0 0 23px;width:23px;height:23px;color:var(--brand);vertical-align:middle}
+@media(max-width:480px){h2 .category-icon{flex-basis:20px;width:20px;height:20px}}
