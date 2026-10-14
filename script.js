@@ -29,7 +29,7 @@ function initCardObserver() {
         cardObserver.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.2 });
+  }, { threshold: 0.01, rootMargin: "350px 0px" });
 }
 
 function observeCard(card) {
@@ -493,12 +493,13 @@ function renderProductos(categoria, productos = []) {
   grid.innerHTML = '';
   dedupeById(productos).forEach(producto => {
     const card = document.createElement('article');
-    card.className = 'card';
+    card.className = 'card visible';
     card.dataset.productId = producto.id;
     card.dataset.category = categoria;
 
+    const eager = categoria === "gourmet";
     card.innerHTML = `
-      <img src="${producto.imagen}" alt="${producto.titulo}" loading="lazy" />
+      <img src="${producto.imagen}" alt="${producto.titulo}" loading="${eager ? "eager" : "lazy"}" decoding="async" fetchpriority="${eager ? "high" : "auto"}" width="480" height="320" />
       <div class="card-content">
         <h3>${producto.titulo}</h3>
         <p>${producto.descripcion}</p>
