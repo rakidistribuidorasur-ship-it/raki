@@ -49,7 +49,7 @@ header{
   margin:0;
   padding:60px 1.5rem 32px;
   text-align:center;
-  background-image:url('./assets/portada.webp');
+  background-image:linear-gradient(rgba(0,0,0,.38),rgba(0,0,0,.38)),url('./assets/portada.webp');
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
@@ -469,4 +469,18 @@ footer a{ color:#fff; }
   header p{
     font-size:1.2rem;
   }
+}
+
+/* Ajustes de legibilidad y dispositivos pequeños */
+header h1,header p{color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.55)}
+.contact-grid select{width:100%;min-width:0;padding:12px;border:1px solid #ddd;border-radius:8px;background:#fff;font:inherit}
+@media(max-width:640px){
+  .contact-grid{grid-template-columns:minmax(0,1fr)}
+  .contact-actions{flex-wrap:wrap}
+  .about-section{margin:2rem 1rem 0;padding:0 0 1rem}
+  .about-copy{padding:0 1rem}
+  .modal-content{flex-direction:column;width:calc(100% - 2rem);max-height:85dvh}
+  .modal-img{width:100%;max-width:none;max-height:45dvh;object-fit:contain}
+  .grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+  .cta-contact{bottom:16px}
 }
